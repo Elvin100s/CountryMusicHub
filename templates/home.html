@@ -12,11 +12,10 @@
                     <a href="#artists" class="btn btn-warning btn-lg px-4 me-md-2">
                         <i class="fas fa-headphones me-2"></i>Browse Artists
                     </a>
-                    {% if current_user.is_authenticated %}
-                    <a href="{{ url_for('upload_song') }}" class="btn btn-outline-light btn-lg px-4">
+                    <button type="button" class="btn btn-outline-light btn-lg px-4" 
+                            onclick="alert('Please select an artist first to upload music directly to their collection.')">
                         <i class="fas fa-upload me-2"></i>Upload Music
-                    </a>
-                    {% endif %}
+                    </button>
                 </div>
             </div>
         </div>
@@ -51,11 +50,9 @@
                     <a href="{{ url_for('artist_page', artist_id=artist.id) }}" class="btn btn-primary">
                         <i class="fas fa-headphones me-2"></i>Listen to Songs
                     </a>
-                    {% if current_user.is_authenticated %}
                     <button onclick="location.href='{{ url_for('artist_page', artist_id=artist.id) }}#upload'" class="btn btn-success">
                         <i class="fas fa-upload me-2"></i>Upload New Song
                     </button>
-                    {% endif %}
                 </div>
             </div>
             <div class="card-footer bg-transparent">
