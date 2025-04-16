@@ -3,6 +3,12 @@ from flask_login import UserMixin
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 
+# Association table for playlists and songs (many-to-many relationship)
+playlist_songs = db.Table('playlist_songs',
+    db.Column('playlist_id', db.Integer, db.ForeignKey('playlist.id'), primary_key=True),
+    db.Column('song_id', db.Integer, db.ForeignKey('song.id'), primary_key=True)
+)
+
 class Admin(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True, nullable=False)
@@ -35,8 +41,41 @@ class Song(db.Model):
     download_count = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
+    # Relationship with playlists through the association table
+    playlists = db.relationship('Playlist', secondary=playlist_songs, 
+                              back_populates='songs')
+    
     def __repr__(self):
         return f'<Song {self.name}>'
+
+class Playlist(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+    is_public = db.Column(db.Boolean, default=True)  # If True, anyone can view this playlist
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relationship with songs through the association table
+    songs = db.relationship('Song', secondary=playlist_songs,
+                          back_populates='playlists')
+    
+    def add_song(self, song):
+        """Add a song to the playlist if it's not already there"""
+        if song not in self.songs:
+            self.songs.append(song)
+            return True
+        return False
+        
+    def remove_song(self, song):
+        """Remove a song from the playlist"""
+        if song in self.songs:
+            self.songs.remove(song)
+            return True
+        return False
+    
+    def __repr__(self):
+        return f'<Playlist {self.name} with {len(self.songs)} songs>'
 
 # Create initial admin if it doesn't exist
 def create_default_admin():
@@ -79,7 +118,22 @@ def create_default_artists():
     
     db.session.commit()
 
+# Create a default playlist
+def create_default_playlist():
+    from app import db
+    
+    default_playlist = Playlist.query.filter_by(name='My Favorites').first()
+    if not default_playlist:
+        default_playlist = Playlist(
+            name='My Favorites',
+            description='A collection of my favorite country songs',
+            is_public=True
+        )
+        db.session.add(default_playlist)
+        db.session.commit()
+
 # Initialize default data
 def init_db():
     create_default_admin()
     create_default_artists()
+    create_default_playlist()
