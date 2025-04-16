@@ -11,47 +11,32 @@ from models import Artist, Song
 from music_api import search_songs, download_song
 
 def get_artist_image(artist_name):
-    """Download and resize artist image from Wikipedia"""
+    """Download artist image from MusicBrainz/Wikipedia"""
     try:
-        from PIL import Image
-        from io import BytesIO
-        
-        # Search for artist on Wikipedia with smaller thumbnail
-        search_url = f"https://en.wikipedia.org/w/api.php?action=query&format=json&prop=pageimages&titles={artist_name}&pithumbsize=300"
+        # Search for artist on MusicBrainz
+        search_url = f"https://musicbrainz.org/ws/2/artist/?query={artist_name}&fmt=json"
         response = requests.get(search_url)
-        
         if response.status_code == 200:
             data = response.json()
-            pages = data['query']['pages']
-            
-            for page_id in pages:
-                page = pages[page_id]
-                if 'thumbnail' in page:
-                    image_url = page['thumbnail']['source']
-                    
-                    # Download image
-                    img_response = requests.get(image_url)
-                    if img_response.status_code == 200:
-                        # Open and resize image
-                        img = Image.open(BytesIO(img_response.content))
-                        img = img.convert('RGB')  # Convert to RGB mode
-                        img.thumbnail((200, 200))  # Resize keeping aspect ratio
-                        
-                        # Save resized image
-                        os.makedirs('static/img/artists', exist_ok=True)
-                        filename = f"static/img/artists/{artist_name.lower().replace(' ', '_')}.jpg"
-                        img.save(filename, 'JPEG', quality=85)
-                        return True
-                        
-        # Fallback to a default profile image if no Wikipedia image found
-        default_url = "https://t4.ftcdn.net/jpg/05/49/98/39/360_F_549983970_bRCkYfk0P6PP5YWy2Zj7wEhZYPE9Ur0k.jpg"
-        img_response = requests.get(default_url)
-        if img_response.status_code == 200:
-            os.makedirs('static/img/artists', exist_ok=True)
-            filename = f"static/img/artists/{artist_name.lower().replace(' ', '_')}.jpg"
-            with open(filename, 'wb') as f:
-                f.write(img_response.content)
-            return True
+            if data['artists']:
+                artist_id = data['artists'][0]['id']
+
+                # Get Wikipedia image URL
+                wiki_url = f"https://musicbrainz.org/ws/2/artist/{artist_id}?inc=url-rels&fmt=json"
+                wiki_response = requests.get(wiki_url)
+                if wiki_response.status_code == 200:
+                    wiki_data = wiki_response.json()
+                    for relation in wiki_data.get('relations', []):
+                        if relation['type'] == 'image':
+                            image_url = relation['url']['resource']
+
+                            # Download and save image
+                            img_response = requests.get(image_url)
+                            if img_response.status_code == 200:
+                                filename = f"static/img/artists/{artist_name.lower().replace(' ', '_')}.jpg"
+                                with open(filename, 'wb') as f:
+                                    f.write(img_response.content)
+                                return True
     except Exception as e:
         logger.error(f"Error getting artist image: {str(e)}")
     return False
