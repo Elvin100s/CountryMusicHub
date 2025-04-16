@@ -1,4 +1,14 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Register service worker for offline support
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/static/js/sw.js')
+            .then(registration => {
+                console.log('ServiceWorker registration successful');
+            })
+            .catch(err => {
+                console.log('ServiceWorker registration failed: ', err);
+            });
+    }
     // Global audio player instance
     let globalAudioPlayer = null;
     let currentPlayingButton = null;
@@ -41,6 +51,16 @@ document.addEventListener('DOMContentLoaded', function() {
         // Play the audio
         globalAudioPlayer.play().catch(error => {
             console.error('Error playing audio:', error);
+            // Check if offline
+            if (!navigator.onLine) {
+                errorToast.innerHTML = `
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            You are offline. Only cached songs can be played.
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                `;
             
             // Show error message
             const errorToast = document.createElement('div');
