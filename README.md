@@ -417,55 +417,39 @@ PythonAnywhere offers a simpler deployment process and includes PostgreSQL hosti
 
 8. **Reload your web app** from the Web tab
 
-### Option 3: Hosting on Heroku
+### Option 3: Advanced Replit Deployment Features
 
-Heroku offers easy deployment and scaling, perfect for moderate traffic.
+Replit offers additional deployment features perfect for scaling your music website:
 
-1. **Sign up for a Heroku account** at [heroku.com](https://www.heroku.com)
+1. **Autoscaling**:
+   - Automatically scales based on traffic
+   - Pay only for what you use
+   - Handles traffic spikes efficiently
 
-2. **Install the Heroku CLI** and log in:
-   ```bash
-   # Install Heroku CLI (instructions vary by OS)
-   heroku login
-   ```
+2. **Performance Optimization**:
+   - Global CDN for fast content delivery
+   - Automatic HTTPS/SSL certificates
+   - DDoS protection included
 
-3. **Prepare your project for Heroku**:
-   - Create a `Procfile` in your project root:
-     ```
-     web: gunicorn main:app
-     ```
-   - Create a `runtime.txt` file:
-     ```
-     python-3.9.16
-     ```
+3. **Advanced Monitoring**:
+   - Real-time performance metrics
+   - Request logging
+   - Error tracking
+   - Resource usage analytics
 
-4. **Initialize Git repository** (if not already done):
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial commit for Heroku deployment"
-   ```
+4. **Database Management**:
+   - Automatic database backups
+   - Easy scaling of storage
+   - Built-in database management tools
 
-5. **Create a Heroku app and add PostgreSQL**:
-   ```bash
-   heroku create your-app-name
-   heroku addons:create heroku-postgresql:hobby-dev
-   ```
+To enable these features:
 
-6. **Deploy your application**:
-   ```bash
-   git push heroku master
-   ```
+1. Click the "Deploy" button in your Replit workspace
+2. Choose "Autoscale" deployment type
+3. Configure your environment variables
+4. Deploy your application
 
-7. **Initialize the database**:
-   ```bash
-   heroku run python reset_db.py
-   ```
-
-8. **Open your application**:
-   ```bash
-   heroku open
-   ```
+Your site will be live at `your-app.replit.app` with all these features enabled!
 
 ### Important Hosting Considerations
 
