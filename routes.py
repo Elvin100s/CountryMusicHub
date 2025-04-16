@@ -11,10 +11,13 @@ from models import Artist, Song
 from music_api import search_songs, download_song
 
 def get_artist_image(artist_name):
-    """Download artist image from Wikipedia"""
+    """Download and resize artist image from Wikipedia"""
     try:
-        # Search for artist on Wikipedia
-        search_url = f"https://en.wikipedia.org/w/api.php?action=query&format=json&prop=pageimages&titles={artist_name}&pithumbsize=500"
+        from PIL import Image
+        from io import BytesIO
+        
+        # Search for artist on Wikipedia with smaller thumbnail
+        search_url = f"https://en.wikipedia.org/w/api.php?action=query&format=json&prop=pageimages&titles={artist_name}&pithumbsize=300"
         response = requests.get(search_url)
         
         if response.status_code == 200:
@@ -26,13 +29,18 @@ def get_artist_image(artist_name):
                 if 'thumbnail' in page:
                     image_url = page['thumbnail']['source']
                     
-                    # Download and save image
+                    # Download image
                     img_response = requests.get(image_url)
                     if img_response.status_code == 200:
+                        # Open and resize image
+                        img = Image.open(BytesIO(img_response.content))
+                        img = img.convert('RGB')  # Convert to RGB mode
+                        img.thumbnail((200, 200))  # Resize keeping aspect ratio
+                        
+                        # Save resized image
                         os.makedirs('static/img/artists', exist_ok=True)
                         filename = f"static/img/artists/{artist_name.lower().replace(' ', '_')}.jpg"
-                        with open(filename, 'wb') as f:
-                            f.write(img_response.content)
+                        img.save(filename, 'JPEG', quality=85)
                         return True
                         
         # Fallback to a default profile image if no Wikipedia image found
