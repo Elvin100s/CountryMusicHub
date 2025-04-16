@@ -61,7 +61,14 @@ def create_default_artists():
         {"name": "Patsy Cline", "description": "Patsy Cline was an American country music singer who helped popularize the genre in the early 1960s."},
         {"name": "Willie Nelson", "description": "Willie Nelson is an American musician, actor, and activist, a critical figure in outlaw country music."},
         {"name": "Tammy Wynette", "description": "Tammy Wynette was an American country music singer-songwriter known as the 'First Lady of Country Music'."},
-        {"name": "George Jones", "description": "George Jones was an American musician, singer, and songwriter regarded as one of the most important and influential country singers of all time."}
+        {"name": "George Jones", "description": "George Jones was an American musician, singer, and songwriter regarded as one of the most important and influential country singers of all time."},
+        {"name": "Bryan Adams", "description": "Bryan Adams is a Canadian rock and country musician known for hits like 'Summer of '69' and 'Everything I Do (I Do It For You)'."},
+        {"name": "Shania Twain", "description": "Shania Twain is a Canadian singer and songwriter who has sold over 100 million records, making her the best-selling female artist in country music history."},
+        {"name": "Garth Brooks", "description": "Garth Brooks is an American singer and songwriter who has integrated pop and rock elements into country music and is one of the world's best-selling artists."},
+        {"name": "Reba McEntire", "description": "Reba McEntire is an American country music singer, actress, and businesswoman known as 'The Queen of Country'."},
+        {"name": "Tim McGraw", "description": "Tim McGraw is an American country singer, actor, and record producer who has released many hit albums and singles throughout his career."},
+        {"name": "Faith Hill", "description": "Faith Hill is an American singer and record producer who is one of the most successful country artists of all time."},
+        {"name": "Keith Urban", "description": "Keith Urban is an Australian-American musician, singer, guitarist, and songwriter known for his fusion of country with rock and pop elements."}
     ]
     
     for artist_data in default_artists:

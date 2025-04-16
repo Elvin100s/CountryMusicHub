@@ -17,21 +17,24 @@
         <h1 class="display-5">{{ artist.name }}</h1>
         <p class="lead">{{ artist.description or 'Country music legend' }}</p>
     </div>
-    <div class="col-md-4 text-md-end">
-        <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#searchSongsModal">
-            <i class="fas fa-search me-2"></i>Find Songs on Tubidy
-        </button>
+    <div class="col-md-5 text-md-end">
+        <div class="btn-group">
+            <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#searchSongsModal">
+                <i class="fas fa-search me-2"></i>Find Songs on Tubidy
+            </button>
+            <button class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#uploadSongModal">
+                <i class="fas fa-upload me-2"></i>Upload From Computer
+            </button>
+        </div>
     </div>
 </div>
 
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Songs ({{ songs|length }})</h5>
-        {% if current_user.is_authenticated %}
-        <button id="upload" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#uploadSongModal">
-            <i class="fas fa-upload me-2"></i>Upload New Song for {{ artist.name }}
+        <button id="upload" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#uploadSongModal">
+            <i class="fas fa-upload me-2"></i>Upload Local MP3 File
         </button>
-        {% endif %}
     </div>
     <div class="card-body">
         {% if songs %}
@@ -73,11 +76,14 @@
             <i class="fas fa-music fa-4x mb-3 text-muted"></i>
             <h4>No songs available yet</h4>
             <p class="text-muted">Search for songs or upload your own below</p>
-            {% if current_user.is_authenticated %}
-            <button class="btn btn-lg btn-success mt-3" data-bs-toggle="modal" data-bs-target="#uploadSongModal">
-                <i class="fas fa-upload me-2"></i>Upload First Song
-            </button>
-            {% endif %}
+            <div class="d-grid gap-2 col-md-6 mx-auto">
+                <button class="btn btn-lg btn-warning mt-3" data-bs-toggle="modal" data-bs-target="#uploadSongModal">
+                    <i class="fas fa-upload me-2"></i>Upload MP3 From Your Computer
+                </button>
+                <button class="btn btn-lg btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#searchSongsModal">
+                    <i class="fas fa-search me-2"></i>Find Songs on Tubidy
+                </button>
+            </div>
         </div>
         {% endif %}
     </div>
