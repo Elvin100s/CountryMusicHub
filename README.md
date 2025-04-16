@@ -1,31 +1,55 @@
-# Serene Sounds of Odd
+# Serene Sounds - Country Music Collection
 
-A beautiful website to browse, play, and download free, legal music featuring artists like Don Williams, Dolly Parton, George Jones and many more. No registration required!
+A beautiful website to browse, play, and download free country music. Features artists like Don Williams, Dolly Parton, George Jones and more.
 
-![Country Music Paradise Screenshot](static/img/screenshot.png)
+## Quick Deploy on Replit
+
+1. Fork this template by clicking "Use Template" button
+2. Click the "Run" button to start the application
+3. The website will be live at your-repl-name.username.repl.co
+
+## Configuring Large File Uploads (up to 300MB)
+
+1. Open the Tools menu in Replit
+2. Select "Secrets"
+3. Add a new secret with:
+   - Key: BODY_SIZE_LIMIT
+   - Value: 314572800
+
+This sets the upload limit to 300MB (314,572,800 bytes)
+
+## Upload Songs
+
+1. Visit any artist's page
+2. Click "Upload MP3 From Your Computer"
+3. Select MP3 files (up to 300MB each)
+4. Click "Upload"
 
 ## Features
 
-- **No Login Required**: Listen to and download music without creating an account
-- **Country Music Legends**: Browse music from artists like Bryan Adams, Kenny Rogers, Dolly Parton, and more
-- **Upload Music**: Upload your own MP3 files directly to any artist's collection (multiple files at once)
-- **Smart Upload**: Song titles are automatically extracted from filenames
-- **Tubidy Integration**: Search and add songs from Tubidy and other free music sources
-- **Mobile-Friendly**: Works on all modern browsers including mobile devices
-- **Backup & Restore**: Easily backup and restore your entire song collection when moving servers
-- **Modern Design**: Beautiful interface with a focus on usability
+- No login required for listening/downloading
+- Upload MP3 files up to 300MB
+- Multiple file uploads at once
+- Automatic song name extraction
+- Mobile-friendly interface
+
+## Troubleshooting
+
+If uploads fail:
+1. Check file size (must be under 300MB)
+2. Ensure file is MP3 format
+3. Check if BODY_SIZE_LIMIT secret is set
+4. Try refreshing the page
+
+Need help? Check Replit's documentation or ask in the community.
 
 ## How to Run Locally
-
 ### Prerequisites
-
 - Python 3.7+
 - PostgreSQL database
 
 ## Running the Application Locally
-
 ### Setting Up Your Development Environment
-
 1. **Clone this repository**:
    ```bash
    git clone https://github.com/yourusername/country-music-paradise.git
@@ -65,7 +89,6 @@ A beautiful website to browse, play, and download free, legal music featuring ar
    ```
 
 ### Setting Up the PostgreSQL Database
-
 1. **Install PostgreSQL** if you don't already have it:
    - For Ubuntu/Debian: `sudo apt install postgresql postgresql-contrib`
    - For macOS (using Homebrew): `brew install postgresql`
@@ -96,7 +119,6 @@ A beautiful website to browse, play, and download free, legal music featuring ar
    ```
 
 ### Starting the Application
-
 1. **Initialize the database with sample data**:
    ```bash
    python reset_db.py
@@ -123,7 +145,6 @@ A beautiful website to browse, play, and download free, legal music featuring ar
 3. **Open your browser** and go to http://localhost:5000
 
 ### Understanding the Directory Structure and Files
-
 The application is organized as follows:
 
 ```
@@ -148,7 +169,6 @@ country-music-paradise/
 ```
 
 ### Core Application Files
-
 - `main.py`: Main entry point of the application, starts the Flask server
 - `app.py`: Core application configuration, database setup, and middleware
 - `models.py`: Database models for Artists, Songs, Playlists, and Admin users
@@ -158,14 +178,12 @@ country-music-paradise/
 - `music_api.py`: Integration with music APIs for song discovery
 
 ### Utility Scripts
-
 - `backup_site.py`: Creates complete backups of the database and music files
 - `bulk_upload.py`: Utility for batch uploading multiple songs at once
 - `fix_paths.py`: Repairs song file paths after moving/restoring backups
 - `reset_db.py`: Initializes the database with default data
 
 ### Configuration Files
-
 - `.replit`: Replit-specific configuration for running the application
 - `pyproject.toml`: Python project dependencies and metadata
 - `replit.nix`: Nix package configuration for Replit environment
@@ -194,7 +212,6 @@ Each file serves a specific purpose in making the application modular and mainta
 
 
 ### How The Components Connect
-
 1. **Frontend to Backend Connection**:
    - The Flask application serves HTML templates from the `templates/` directory
    - Static files (CSS, JS, images) are served from the `static/` directory
@@ -208,9 +225,7 @@ Each file serves a specific purpose in making the application modular and mainta
    - Songs in the database have file paths that point to the `static/music/` directory
 
 ## Hosting Your Music Website
-
 ### Hosting on Replit (Recommended)
-
 Replit provides a simple and free way to host your country music website:
 
 1. **Deploy Your App**:
@@ -246,11 +261,9 @@ Replit provides a simple and free way to host your country music website:
    - View logs in real-time
 
 ### Option 1: Hosting on Your Own Server or VPS
-
 This option gives you complete control over your music website and database.
 
 #### Steps to Set Up on a Linux Server (Ubuntu/Debian)
-
 1. **Install required system packages**:
    ```bash
    sudo apt update
@@ -366,7 +379,6 @@ This option gives you complete control over your music website and database.
     ```
 
 ### Option 2: Hosting on PythonAnywhere
-
 PythonAnywhere offers a simpler deployment process and includes PostgreSQL hosting.
 
 1. **Sign up for a PythonAnywhere account** at [pythonanywhere.com](https://www.pythonanywhere.com)
@@ -418,7 +430,6 @@ PythonAnywhere offers a simpler deployment process and includes PostgreSQL hosti
 8. **Reload your web app** from the Web tab
 
 ### Option 3: Advanced Replit Deployment Features
-
 Replit offers additional deployment features perfect for scaling your music website:
 
 1. **Autoscaling**:
@@ -452,7 +463,6 @@ To enable these features:
 Your site will be live at `your-app.replit.app` with all these features enabled!
 
 ### Important Hosting Considerations
-
 1. **Storage Space**: Ensure your hosting plan has enough storage for uploaded music files
 2. **Database Backups**: Schedule regular backups using the backup_site.py script
 3. **Traffic Limits**: Be aware of bandwidth limits on your hosting plan
@@ -460,9 +470,7 @@ Your site will be live at `your-app.replit.app` with all these features enabled!
 5. **Security**: Keep your server and dependencies updated regularly
 
 ## Adding Songs to the Collection
-
 ### Method 1: Web Interface Upload
-
 1. Navigate to any artist's page
 2. Click the "Upload From Computer" button
 3. Select a file (or multiple files) from your device
@@ -470,7 +478,6 @@ Your site will be live at `your-app.replit.app` with all these features enabled!
 5. Click "Upload" to add the song to the collection
 
 ### Method 2: Offline Bulk Upload
-
 The site includes a powerful bulk upload script that can process entire directories of music files organized by artist:
 
 1. Organize your MP3 files in a directory structure:
@@ -496,13 +503,10 @@ The site includes a powerful bulk upload script that can process entire director
    - Skip any duplicates automatically
 
 ## Backing Up and Restoring Your Music Collection
-
 When you download the code as a ZIP file, it will NOT include your database or uploaded songs. Follow these steps to backup and restore your music collection:
 
 ### Backing Up Songs and Database
-
 #### Method 1: Using the Automatic Backup Script (Recommended)
-
 1. Simply run the backup script:
    ```bash
    python backup_site.py
@@ -515,7 +519,6 @@ When you download the code as a ZIP file, it will NOT include your database or u
    - Provide instructions for restoring
 
 #### Method 2: Manual Backup
-
 1. **Back up your song files**:
    - All uploaded songs are stored in the `static/music` directory
    - Download or copy this entire directory to save your music files
@@ -533,7 +536,6 @@ When you download the code as a ZIP file, it will NOT include your database or u
    ```
 
 ### Restoring Your Music Collection to a New Server
-
 1. **Set up the basic application** by following the installation steps above
 
 2. **Restore your database**:
@@ -555,7 +557,6 @@ When you download the code as a ZIP file, it will NOT include your database or u
    This script automatically corrects all file paths in the database to match your current server setup.
 
 ### Quick Database Check
-
 To check if your database has been properly restored and all songs are accessible:
 
 ```bash
@@ -571,7 +572,6 @@ SELECT name, file_path FROM song LIMIT 5;
 ```
 
 ## Browser Compatibility
-
 Country Music Paradise is tested and works on all modern browsers:
 - Chrome 60+
 - Firefox 60+
@@ -581,11 +581,9 @@ Country Music Paradise is tested and works on all modern browsers:
 - Mobile browsers (iOS Safari, Android Chrome)
 
 ## License
-
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Acknowledgments
-
 - All music is freely available through legal channels like Tubidy and user uploads
 - Music metadata is provided by various free music APIs
 - Special thanks to the open-source community for the tools and libraries used in this project

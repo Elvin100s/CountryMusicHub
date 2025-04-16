@@ -2,6 +2,10 @@ import os
 import logging
 import requests
 from flask import render_template, request, redirect, url_for, flash, jsonify, send_file, abort, session
+import os
+
+# Set max upload size from environment or default to 300MB
+MAX_CONTENT_LENGTH = int(os.getenv('BODY_SIZE_LIMIT', 314572800))  # 300MB in bytes
 from app import db, app
 from models import Artist, Song
 from music_api import search_songs, download_song
