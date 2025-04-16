@@ -1,10 +1,25 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="row mb-4">
-    <div class="col">
-        <h1 class="display-4 text-center mb-4">Welcome to Country Music Paradise</h1>
-        <p class="lead text-center">Discover and enjoy free, legal country music from legendary artists.</p>
+<!-- Hero Section -->
+<div class="hero-section text-center text-white rounded-3 mb-5">
+    <div class="container py-5">
+        <h1 class="display-3 hero-title mb-4">Country Music Paradise</h1>
+        <p class="lead mb-4">Discover and enjoy free, legal country music from legendary artists</p>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                    <a href="#artists" class="btn btn-warning btn-lg px-4 me-md-2">
+                        <i class="fas fa-headphones me-2"></i>Browse Artists
+                    </a>
+                    {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('upload_song') }}" class="btn btn-outline-light btn-lg px-4">
+                        <i class="fas fa-upload me-2"></i>Upload Music
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -12,26 +27,41 @@
     <div class="col">
         <div class="alert alert-info">
             <i class="fas fa-info-circle me-2"></i>
-            All music on this site is freely available under Creative Commons licenses or from other legal sources. No account needed to listen or download!
+            All music on this site is freely available from Tubidy and other legal sources. No account needed to listen or download!
         </div>
     </div>
 </div>
 
-<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+<div id="artists" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
     {% for artist in artists %}
     <div class="col fade-in" style="animation-delay: {{ loop.index0 * 0.1 }}s">
-        <div class="card h-100 artist-card">
+        <div class="card h-100 artist-card shadow-sm">
+            <!-- Use different placeholder images for each artist -->
+            <div class="position-relative">
+                <img src="https://source.unsplash.com/random/400x300/?country,music,{{ artist.name|urlencode }}" 
+                     class="card-img-top" alt="{{ artist.name }}" 
+                     style="height: 160px; object-fit: cover;">
+                <div class="position-absolute bottom-0 start-0 w-100 bg-dark bg-opacity-75 text-white p-2">
+                    <h5 class="card-title mb-0">{{ artist.name }}</h5>
+                </div>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">{{ artist.name }}</h5>
                 <p class="card-text text-truncate-2">{{ artist.description or 'Country music legend' }}</p>
                 <div class="d-grid gap-2">
-                    <a href="{{ url_for('artist_page', artist_id=artist.id) }}" class="btn btn-primary">View Songs</a>
+                    <a href="{{ url_for('artist_page', artist_id=artist.id) }}" class="btn btn-primary">
+                        <i class="fas fa-headphones me-2"></i>Listen to Songs
+                    </a>
                     {% if current_user.is_authenticated %}
                     <button onclick="location.href='{{ url_for('artist_page', artist_id=artist.id) }}#upload'" class="btn btn-success">
-                        <i class="fas fa-upload me-2"></i>Upload Song
+                        <i class="fas fa-upload me-2"></i>Upload New Song
                     </button>
                     {% endif %}
                 </div>
+            </div>
+            <div class="card-footer bg-transparent">
+                <small class="text-muted">
+                    <i class="fas fa-music me-1"></i> {{ artist.songs|length }} songs available
+                </small>
             </div>
         </div>
     </div>
