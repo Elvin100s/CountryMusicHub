@@ -71,7 +71,7 @@ Need help? Check Replit's documentation or ask in the community.
 ### Setting Up Your Development Environment
 1. **Clone this repository**:
    ```bash
-   git clone https://github.com/yourusername/country-music-paradise.git
+   git clone https://github.c/Elvin100s/country-music-paradise.git
    cd country-music-paradise
    ```
 
