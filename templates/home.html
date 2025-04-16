@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1 class="display-4 text-center mb-4">Welcome to Country Music Paradise</h1>
+        <p class="lead text-center">Discover and enjoy free, legal country music from legendary artists.</p>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col">
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>
+            All music on this site is freely available under Creative Commons licenses or from other legal sources. No account needed to listen or download!
+        </div>
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {% for artist in artists %}
+    <div class="col fade-in" style="animation-delay: {{ loop.index0 * 0.1 }}s">
+        <div class="card h-100 artist-card">
+            <div class="card-body">
+                <h5 class="card-title">{{ artist.name }}</h5>
+                <p class="card-text text-truncate-2">{{ artist.description or 'Country music legend' }}</p>
+                <a href="{{ url_for('artist_page', artist_id=artist.id) }}" class="btn btn-primary">View Songs</a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            No artists found. Please check back later or contact the administrator.
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-6 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h5>About Country Music Paradise</h5>
+            </div>
+            <div class="card-body">
+                <p>Country Music Paradise is dedicated to providing free, legal country music that you can listen to and download without creating an account.</p>
+                <p>We feature classic country artists like Don Williams, Kenny Rogers, Dolly Parton, and more. All music is available through legal channels and Creative Commons licenses.</p>
+                <p>Simply browse to an artist, find a song you like, and enjoy!</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

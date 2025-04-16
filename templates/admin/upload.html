@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Upload Song</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col">
+        <h1 class="display-5">Upload Song</h1>
+        <p class="lead">Add new songs to the Country Music Paradise collection</p>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Upload Song</h5>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('upload_song') }}" method="post" enctype="multipart/form-data" id="upload-song-form">
+                    <div class="mb-3">
+                        <label for="artist-id" class="form-label">Artist</label>
+                        <select class="form-select" id="artist-id" name="artist_id" required>
+                            <option value="">Select Artist</option>
+                            {% for artist in artists %}
+                            <option value="{{ artist.id }}">{{ artist.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="song-name" class="form-label">Song Name</label>
+                        <input type="text" class="form-control" id="song-name" name="song_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="song-file" class="form-label">Song File (MP3)</label>
+                        <input type="file" class="form-control" id="song-file" name="song_file" accept="audio/*" required>
+                        <div class="form-text">Upload MP3 files only. Maximum file size: 10MB.</div>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Upload Song</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">Important Notes</h5>
+            </div>
+            <div class="card-body">
+                <ul>
+                    <li>Only upload songs that you have the rights to or are under Creative Commons licenses.</li>
+                    <li>Make sure the song name is accurate and matches the file content.</li>
+                    <li>For better audio quality, use MP3 files with at least 128kbps bitrate.</li>
+                    <li>All uploaded songs will be immediately available for users to listen and download.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}

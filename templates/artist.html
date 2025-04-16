@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ artist.name }}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1 class="display-5">{{ artist.name }}</h1>
+        <p class="lead">{{ artist.description or 'Country music legend' }}</p>
+    </div>
+    <div class="col-md-4 text-md-end">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#searchSongsModal">
+            <i class="fas fa-search me-2"></i>Find New Songs
+        </button>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">Songs ({{ songs|length }})</h5>
+    </div>
+    <div class="card-body">
+        {% if songs %}
+        <ul class="song-list">
+            {% for song in songs %}
+            <li class="song-item bg-dark-subtle fade-in" style="animation-delay: {{ loop.index0 * 0.1 }}s">
+                <span class="song-name">{{ song.name }}</span>
+                <div class="song-controls">
+                    <button onclick="playSong({{ song.id }}, this)" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button onclick="downloadSong({{ song.id }})" class="btn btn-sm btn-outline-success">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    {% if current_user.is_authenticated %}
+                    <button onclick="confirmDeleteSong({{ song.id }}, '{{ song.name }}')" class="btn btn-sm btn-outline-danger">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <form id="delete-song-form-{{ song.id }}" action="{{ url_for('delete_song', song_id=song.id) }}" method="post" class="d-none"></form>
+                    {% endif %}
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>
+            No songs available for this artist yet. Click "Find New Songs" to search for and add songs from free, legal sources.
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Search Songs Modal -->
+<div class="modal fade" id="searchSongsModal" tabindex="-1" aria-labelledby="searchSongsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="searchSongsModalLabel">Search for Songs</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" id="song-search" placeholder="Search for country music songs...">
+                    <button class="btn btn-primary" type="button" onclick="searchSongs({{ artist.id }}, '{{ artist.name }}')">
+                        <i class="fas fa-search me-2"></i>Search
+                    </button>
+                </div>
+                
+                <div id="search-results" class="mt-3">
+                    <!-- Search results will appear here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- No additional scripts needed as audio-player.js is included in base.html -->
+{% endblock %}

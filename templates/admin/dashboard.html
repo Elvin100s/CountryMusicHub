@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Admin Dashboard</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col">
+        <h1 class="display-5">Admin Dashboard</h1>
+        <p class="lead">Manage artists and songs on Country Music Paradise</p>
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-md-2 mb-4">
+    <div class="col mb-4 mb-md-0">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Statistics</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <h3>{{ artists|length }}</h3>
+                        <p>Artists</p>
+                    </div>
+                    <div class="col-6">
+                        <h3>{{ songs_count }}</h3>
+                        <p>Songs</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addArtistModal">
+                        <i class="fas fa-plus me-2"></i>Add New Artist
+                    </button>
+                    <a href="{{ url_for('upload_song') }}" class="btn btn-success">
+                        <i class="fas fa-music me-2"></i>Upload New Song
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Manage Artists</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Songs</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for artist in artists %}
+                    <tr>
+                        <td>{{ artist.name }}</td>
+                        <td>{{ artist.description|truncate(50) if artist.description else "-" }}</td>
+                        <td>{{ artist.songs|length }}</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a href="{{ url_for('artist_page', artist_id=artist.id) }}" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editArtistModal" 
+                                        data-artist-id="{{ artist.id }}" 
+                                        data-artist-name="{{ artist.name }}" 
+                                        data-artist-description="{{ artist.description or '' }}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="confirmDeleteArtist({{ artist.id }}, '{{ artist.name }}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                <form id="delete-artist-form-{{ artist.id }}" action="{{ url_for('delete_artist', artist_id=artist.id) }}" method="post" class="d-none"></form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center">No artists found. Add an artist to get started.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Add Artist Modal -->
+<div class="modal fade" id="addArtistModal" tabindex="-1" aria-labelledby="addArtistModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addArtistModalLabel">Add New Artist</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('add_artist') }}" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="artist-name" class="form-label">Artist Name</label>
+                        <input type="text" class="form-control" id="artist-name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="artist-description" class="form-label">Description</label>
+                        <textarea class="form-control" id="artist-description" name="description" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Artist</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Artist Modal -->
+<div class="modal fade" id="editArtistModal" tabindex="-1" aria-labelledby="editArtistModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editArtistModalLabel">Edit Artist</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('edit_artist', artist_id=0) }}" method="post" id="edit-artist-form">
+                <div class="modal-body">
+                    <input type="hidden" id="edit-artist-id" name="artist_id">
+                    <div class="mb-3">
+                        <label for="edit-artist-name" class="form-label">Artist Name</label>
+                        <input type="text" class="form-control" id="edit-artist-name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit-artist-description" class="form-label">Description</label>
+                        <textarea class="form-control" id="edit-artist-description" name="description" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,76 @@
+/* Custom styles to complement Bootstrap */
+
+/* Main layout */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+/* Artist cards */
+.artist-card {
+    transition: transform 0.3s;
+    height: 100%;
+}
+
+.artist-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Audio player */
+.audio-player {
+    width: 100%;
+    border-radius: 8px;
+}
+
+/* Song list */
+.song-list {
+    list-style: none;
+    padding: 0;
+}
+
+.song-item {
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.song-name {
+    margin-right: 10px;
+    flex-grow: 1;
+}
+
+.song-controls {
+    display: flex;
+    gap: 10px;
+}
+
+/* Admin dashboard */
+.admin-actions {
+    margin-bottom: 30px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s;
+}
+
+/* Utility classes */
+.text-truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
