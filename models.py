@@ -110,9 +110,13 @@ def create_default_artists():
         {"name": "Keith Urban", "description": "Keith Urban is an Australian-American musician, singer, guitarist, and songwriter known for his fusion of country with rock and pop elements."}
     ]
     
+    from routes import get_artist_image
+    
     for artist_data in default_artists:
         artist = Artist.query.filter_by(name=artist_data["name"]).first()
         if not artist:
+            # Try to download artist image when creating default artists
+            get_artist_image(artist_data["name"])
             artist = Artist(name=artist_data["name"], description=artist_data["description"])
             db.session.add(artist)
     

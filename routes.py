@@ -1,9 +1,41 @@
 import os
 import logging
+import requests
 from flask import render_template, request, redirect, url_for, flash, jsonify, send_file, abort, session
 from app import db, app
 from models import Artist, Song
 from music_api import search_songs, download_song
+
+def get_artist_image(artist_name):
+    """Download artist image from MusicBrainz/Wikipedia"""
+    try:
+        # Search for artist on MusicBrainz
+        search_url = f"https://musicbrainz.org/ws/2/artist/?query={artist_name}&fmt=json"
+        response = requests.get(search_url)
+        if response.status_code == 200:
+            data = response.json()
+            if data['artists']:
+                artist_id = data['artists'][0]['id']
+                
+                # Get Wikipedia image URL
+                wiki_url = f"https://musicbrainz.org/ws/2/artist/{artist_id}?inc=url-rels&fmt=json"
+                wiki_response = requests.get(wiki_url)
+                if wiki_response.status_code == 200:
+                    wiki_data = wiki_response.json()
+                    for relation in wiki_data.get('relations', []):
+                        if relation['type'] == 'image':
+                            image_url = relation['url']['resource']
+                            
+                            # Download and save image
+                            img_response = requests.get(image_url)
+                            if img_response.status_code == 200:
+                                filename = f"static/img/artists/{artist_name.lower().replace(' ', '_')}.jpg"
+                                with open(filename, 'wb') as f:
+                                    f.write(img_response.content)
+                                return True
+    except Exception as e:
+        logger.error(f"Error getting artist image: {str(e)}")
+    return False
 
 logger = logging.getLogger(__name__)
 
