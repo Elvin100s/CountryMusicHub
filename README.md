@@ -8,9 +8,11 @@ A beautiful website to browse, play, and download free, legal country music feat
 
 - **No Login Required**: Listen to and download music without creating an account
 - **Country Music Legends**: Browse music from artists like Bryan Adams, Kenny Rogers, Dolly Parton, and more
-- **Upload Music**: Upload your own MP3 files directly to any artist's collection
+- **Upload Music**: Upload your own MP3 files directly to any artist's collection (multiple files at once)
+- **Smart Upload**: Song titles are automatically extracted from filenames
 - **Tubidy Integration**: Search and add songs from Tubidy and other free music sources
 - **Mobile-Friendly**: Works on all modern browsers including mobile devices
+- **Backup & Restore**: Easily backup and restore your entire song collection when moving servers
 - **Modern Design**: Beautiful interface with a focus on usability
 
 ## How to Run Locally
@@ -23,19 +25,40 @@ A beautiful website to browse, play, and download free, legal country music feat
 ### Installation Steps
 
 1. Clone this repository:
-   ```
+   ```bash
    git clone https://github.com/yourusername/country-music-paradise.git
    cd country-music-paradise
    ```
 
 2. Set up a virtual environment (optional but recommended):
-   ```
+   ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows, use: venv\Scripts\activate
    ```
 
 3. Install the required packages:
+   ```bash
+   pip install Flask==2.3.3 Flask-Login==0.6.2 Flask-SQLAlchemy==3.1.1 gunicorn==23.0.0 
+   pip install psycopg2-binary==2.9.9 requests==2.31.0 SQLAlchemy==2.0.23 Werkzeug==2.3.7
+   pip install email-validator==2.0.0 trafilatura==1.6.1
    ```
+   
+   Alternatively, create a requirements.txt file with the following content:
+   ```
+   email-validator==2.0.0
+   Flask==2.3.3
+   Flask-Login==0.6.2
+   Flask-SQLAlchemy==3.1.1
+   gunicorn==23.0.0
+   psycopg2-binary==2.9.9
+   requests==2.31.0
+   SQLAlchemy==2.0.23
+   trafilatura==1.6.1
+   Werkzeug==2.3.7
+   ```
+   
+   And install using:
+   ```bash
    pip install -r requirements.txt
    ```
 
@@ -107,6 +130,8 @@ A beautiful website to browse, play, and download free, legal country music feat
 
 ### Method 2: Offline Bulk Upload
 
+The site includes a powerful bulk upload script that can process entire directories of music files organized by artist:
+
 1. Organize your MP3 files in a directory structure:
    ```
    /music_to_add
@@ -117,12 +142,92 @@ A beautiful website to browse, play, and download free, legal country music feat
        - The Gambler.mp3
    ```
 
-2. Use the bulk upload script (requires SSH access to server):
-   ```
+2. Use the included bulk upload script:
+   ```bash
    python bulk_upload.py /path/to/music_to_add
    ```
 
-3. The songs will be automatically added to the database with artist matching
+3. The script will:
+   - Match directory names to artists in the database
+   - Extract song titles from filenames automatically
+   - Copy all files to the correct location
+   - Add all songs to the database
+   - Skip any duplicates automatically
+
+## Backing Up and Restoring Your Music Collection
+
+When you download the code as a ZIP file, it will NOT include your database or uploaded songs. Follow these steps to backup and restore your music collection:
+
+### Backing Up Songs and Database
+
+#### Method 1: Using the Automatic Backup Script (Recommended)
+
+1. Simply run the backup script:
+   ```bash
+   python backup_site.py
+   ```
+
+2. The script will:
+   - Create a backup of your PostgreSQL database
+   - Archive all your song files
+   - Package everything in a timestamped ZIP file in the `backups` directory
+   - Provide instructions for restoring
+
+#### Method 2: Manual Backup
+
+1. **Back up your song files**:
+   - All uploaded songs are stored in the `static/music` directory
+   - Download or copy this entire directory to save your music files
+
+2. **Back up your database**:
+   ```bash
+   # For PostgreSQL databases - run this in your terminal
+   pg_dump -U username -F c -b -v -f country_music_backup.dump your_database_name
+   ```
+
+3. **Bundle everything together** (optional):
+   ```bash
+   # This creates a single archive with code, songs, and database
+   zip -r country_music_complete.zip . -x "venv/*" ".git/*"
+   ```
+
+### Restoring Your Music Collection to a New Server
+
+1. **Set up the basic application** by following the installation steps above
+
+2. **Restore your database**:
+   ```bash
+   # For PostgreSQL databases - run this in your terminal
+   pg_restore -U username -d your_new_database_name -v country_music_backup.dump
+   ```
+
+3. **Restore song files**:
+   - Copy your backed-up `static/music` directory to the same location in the new installation
+   - Make sure the file permissions allow the web server to read these files
+
+4. **Fix song paths in the database** (if songs appear in the database but won't play):
+   ```bash
+   # Run the included fix_paths.py script
+   python fix_paths.py
+   ```
+   
+   This script automatically corrects all file paths in the database to match your current server setup.
+
+### Quick Database Check
+
+To check if your database has been properly restored and all songs are accessible:
+
+```bash
+# Connect to your PostgreSQL database
+psql -U username your_database_name
+
+# Run these queries to verify data
+SELECT COUNT(*) FROM artist;  -- Should show the number of artists
+SELECT COUNT(*) FROM song;    -- Should show the number of songs
+
+# Check if file paths are correctly set
+SELECT name, file_path FROM song LIMIT 5;
+```
 
 ## Browser Compatibility
 
