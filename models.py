@@ -93,6 +93,7 @@ def create_default_artists():
     from app import db
     
     default_artists = [
+        {"name": "Lionel Richie", "description": "Lionel Richie is an American singer-songwriter known for hits like 'Hello' and 'All Night Long', who successfully crossed between R&B and country music."},
         {"name": "Don Williams", "description": "Don Williams was an American country music singer, songwriter, and 2010 inductee to the Country Music Hall of Fame."},
         {"name": "Kenny Rogers", "description": "Kenny Rogers was an American singer, songwriter, musician, actor, and entrepreneur known for his raspy voice and hits like 'The Gambler'."},
         {"name": "Dolly Parton", "description": "Dolly Parton is an American singer, songwriter, multi-instrumentalist, actress, author, businesswoman, and humanitarian, known for her work in country music."},
