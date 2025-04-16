@@ -161,6 +161,42 @@ country-music-paradise/
 
 ## Hosting Your Music Website
 
+### Hosting on Replit (Recommended)
+
+Replit provides a simple and free way to host your country music website:
+
+1. **Deploy Your App**:
+   - Click the "Deploy" button in your Replit workspace
+   - Replit will automatically build and deploy your application
+   - You'll get a public URL like `your-app.username.repl.co`
+
+2. **Configure Environment**:
+   - Use Replit's Secrets tool to store sensitive data like API keys
+   - Access the Secrets tool from the Tools panel
+   - Add your database URL and other environment variables
+
+3. **Database Setup**:
+   - Replit provides a free SQLite database out of the box
+   - Your database file is automatically persisted
+   - No additional configuration needed
+
+4. **SSL/HTTPS**:
+   - Replit automatically provides SSL certificates
+   - Your site will be served over HTTPS by default
+
+5. **Scaling**:
+   - Replit's free tier includes:
+     - Always-on hosting
+     - Automatic HTTPS
+     - Global CDN
+     - DDoS protection
+
+6. **Maintaining Your Site**:
+   - Make changes directly in the Replit editor
+   - Changes are automatically deployed
+   - Use the Console to monitor your application
+   - View logs in real-time
+
 ### Option 1: Hosting on Your Own Server or VPS
 
 This option gives you complete control over your music website and database.
