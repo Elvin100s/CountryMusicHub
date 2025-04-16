@@ -1,6 +1,6 @@
-# Country Music Paradise
+# Serene Sounds of Odd
 
-A beautiful website to browse, play, and download free, legal country music featuring legendary artists like Bryan Adams, Dolly Parton, and many more. No registration required!
+A beautiful website to browse, play, and download free, legal music featuring artists like Don Williams, Dolly Parton, George Jones and many more. No registration required!
 
 ![Country Music Paradise Screenshot](static/img/screenshot.png)
 
