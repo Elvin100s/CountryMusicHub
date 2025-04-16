@@ -1,0 +1,129 @@
+ChatGPT said:
+Here is the final prompt that you can use to set up your country music website with the ability to download songs from free, legal sources and store them in a database. This prompt includes functionality to allow users to listen, download, and upload songs, with an emphasis on royalty-free and Creative Commons music:
+
+Website Features:
+Artist Pages: A list of country music legends like Don Williams, Kenny Rogers, Dolly Parton, Bryan Adams, Westlife, and more classic country artists.
+
+Song Upload: Upload and display songs by each artist, where only the song name needs to be entered (not album or other metadata).
+
+Download and Listen: Users can click on a song, download it from a free, legal source (such as Free Music Archive, Jamendo, Incompetech, or ccMixter), and play it on the website.
+
+Database: All songs are stored in a database for easy retrieval. The database only needs song name and artist, and tracks are stored in a specific folder on the server.
+
+API Integration for Downloading Music:
+Free Music Archive (FMA) API
+
+Provides royalty-free music under Creative Commons licenses that can be legally downloaded.
+
+Download Capability: Allows downloading directly from the API if the song is available for free download.
+
+API Documentation: FMA API
+
+Jamendo API
+
+Offers a collection of free music under Creative Commons licenses, enabling easy downloading of legal tracks.
+
+Download Capability: Allows downloading of tracks licensed under Creative Commons.
+
+API Documentation: Jamendo API
+
+ccMixter API
+
+A community-based platform for remixing music, offering tracks under Creative Commons licenses.
+
+Download Capability: Tracks that are free to download are accessible.
+
+API Documentation: ccMixter API
+
+Incompetech (No API, direct downloads)
+
+A collection of royalty-free music by Kevin MacLeod, available for free download and use.
+
+Download Capability: Songs are available for free download directly from the website.
+
+Website: Incompetech
+
+General Workflow:
+Search for and Display Songs: When an artist is selected, a list of songs appears, including a download button.
+
+Download Songs: Clicking on the download button triggers a download from one of the legal APIs (like Free Music Archive, Jamendo, etc.).
+
+Store Metadata in Database: Each song (when downloaded) is stored in the /static/music folder, and song metadata (song name and artist) is saved to the database.
+
+Play Audio: Users can listen to songs directly on the website, without needing to log in or register.
+
+No Login/Registration: The website works without requiring user login, making it easy for visitors to download and listen to music.
+
+Steps for Setting Up the Website:
+Use the APIs for Music Search:
+
+Integrate with the Free Music Archive, Jamendo, or ccMixter APIs to retrieve and display music tracks under the selected artists.
+
+Each track's metadata (like song name and artist) is displayed on the artist’s page.
+
+Download and Store Music:
+
+When a user clicks on a song, use the API to download the song (if available) from the external source, such as FMA or Jamendo.
+
+Store the downloaded songs in a dedicated folder (e.g., /static/music/).
+
+Save the song's metadata (song name and artist) in your database for easy retrieval.
+
+Play Music:
+
+Add an audio player to your website that allows users to play the downloaded songs directly from the stored location.
+
+No Login/Registration: The website should be simple to use, without requiring a user to log in.
+
+Sample Code for Downloading Music:
+Here’s a basic Python example using the requests library to download a track from Free Music Archive:
+
+python
+Copy
+import requests
+from flask import Flask, render_template
+
+app = Flask(__name__)
+
+@app.route('/download/<song_name>')
+def download_song(song_name):
+    # Replace with actual song URL from Free Music Archive (FMA)
+    song_url = f"https://freemusicarchive.org/file/artist/song/{song_name}.mp3"
+    response = requests.get(song_url)
+
+    # Save the file to the server's static folder
+    file_path = f"./static/music/{song_name}.mp3"
+    with open(file_path, 'wb') as f:
+        f.write(response.content)
+
+    return render_template('song_downloaded.html', song_name=song_name)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+Database Schema (Example):
+You can use a simple schema to store the songs' metadata in a SQLite database, with SQLAlchemy in Python:
+
+python
+Copy
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
+
+class Song(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    artist = db.Column(db.String(100), nullable=False)
+    file_path = db.Column(db.String(200), nullable=False)
+
+    def __repr__(self):
+        return f'<Song {self.name}>'
+Summary of the Workflow:
+Artists’ Pages: Display artists and songs.
+
+Search and Download: Use APIs to fetch free, legal music for download (like FMA, Jamendo).
+
+Database: Save song metadata and file paths.
+
+Audio Player: Enable playback and download without needing user login.
+
+This prompt should be the foundation of your country music website, ensuring that everything from song upload, download, and listening functionality works seamlessly without requiring user registration or login.
