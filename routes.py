@@ -54,7 +54,8 @@ def register_routes(app):
     def artist_page(artist_id):
         artist = Artist.query.get_or_404(artist_id)
         songs = Song.query.filter_by(artist_id=artist_id).order_by(Song.name).all()
-        return render_template('artist.html', artist=artist, songs=songs)
+        playlists = Playlist.query.filter_by(is_public=True).all()
+        return render_template('artist.html', artist=artist, songs=songs, playlists=playlists)
 
     @app.route('/api/search_songs')
     def api_search_songs():

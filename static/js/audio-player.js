@@ -94,6 +94,49 @@ document.addEventListener('DOMContentLoaded', function() {
     window.downloadSong = function(songId) {
         window.location.href = `/download/${songId}`;
     };
+
+    // Playlist functionality
+    let currentSongId = null;
+    
+    window.showPlaylistModal = function(songId, songName) {
+        currentSongId = songId;
+        document.getElementById('songName').textContent = songName;
+        const modal = new bootstrap.Modal(document.getElementById('playlistModal'));
+        modal.show();
+    };
+    
+    window.addToPlaylist = function(playlistId) {
+        if (!currentSongId) return;
+        
+        fetch(`/api/playlist/${playlistId}/add/${currentSongId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const modal = bootstrap.Modal.getInstance(document.getElementById('playlistModal'));
+                modal.hide();
+                
+                // Show success toast
+                const toast = document.createElement('div');
+                toast.className = 'toast align-items-center text-bg-success border-0 position-fixed top-0 end-0 m-3';
+                toast.innerHTML = `
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            Song added to playlist successfully!
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                    </div>
+                `;
+                document.body.appendChild(toast);
+                const bsToast = new bootstrap.Toast(toast);
+                bsToast.show();
+            }
+        });
+    };
     
     // Function to search for songs
     window.searchSongs = function(artistId, artistName) {

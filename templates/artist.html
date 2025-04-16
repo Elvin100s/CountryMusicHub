@@ -59,6 +59,9 @@
                             <button onclick="downloadSong({{ song.id }})" class="btn btn-success">
                                 <i class="fas fa-download me-1"></i> Download
                             </button>
+                            <button onclick="showPlaylistModal({{ song.id }}, '{{ song.name }}')" class="btn btn-info">
+                                <i class="fas fa-list me-1"></i> Add to Playlist
+                            </button>
                             {% if current_user.is_authenticated %}
                             <button onclick="confirmDeleteSong({{ song.id }}, '{{ song.name }}')" class="btn btn-danger">
                                 <i class="fas fa-trash"></i>
@@ -221,3 +224,33 @@
 {% block scripts %}
 <!-- No additional scripts needed as audio-player.js is included in base.html -->
 {% endblock %}
+<!-- Playlist Modal -->
+<div class="modal fade" id="playlistModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add to Playlist</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Choose a playlist to add "<span id="songName"></span>":</p>
+                <div id="playlistList" class="list-group">
+                    {% for playlist in playlists %}
+                    <button type="button" 
+                            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                            onclick="addToPlaylist({{ playlist.id }})">
+                        {{ playlist.name }}
+                        <span class="badge bg-primary rounded-pill">{{ playlist.songs|length }} songs</span>
+                    </button>
+                    {% endfor %}
+                </div>
+                {% if not playlists %}
+                <p class="text-muted">No playlists available. Create one first!</p>
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
