@@ -102,15 +102,14 @@ def register_routes(app):
     
     @app.route('/user_upload_song', methods=['POST'])
     def user_upload_song():
-        """Allow any user to upload songs without requiring admin login"""
+        """Allow any user to upload songs without requiring admin login
+        Supports multiple file uploads and auto-extracts song names from filenames"""
         
         try:
             artist_id = request.form.get('artist_id')
-            song_name = request.form.get('song_name')
-            song_file = request.files.get('song_file')
             
-            if not artist_id or not song_name or not song_file:
-                flash('All fields are required', 'danger')
+            if not artist_id or 'song_file' not in request.files:
+                flash('Artist and at least one song file are required', 'danger')
                 return redirect(url_for('artist_page', artist_id=artist_id)) if artist_id else redirect(url_for('home'))
             
             artist = Artist.query.get(artist_id)
@@ -118,42 +117,80 @@ def register_routes(app):
                 flash('Artist not found', 'danger')
                 return redirect(url_for('home'))
             
-            # Check if song already exists for this artist
-            existing_song = Song.query.filter_by(name=song_name, artist_id=artist_id).first()
-            if existing_song:
-                flash('Song already exists for this artist', 'danger')
-                return redirect(url_for('artist_page', artist_id=artist_id))
-            
             # Make sure the MUSIC_FOLDER exists
-            if not os.path.exists(app.config.get('MUSIC_FOLDER', 'static/music')):
-                os.makedirs(app.config.get('MUSIC_FOLDER', 'static/music'))
-            
-            # Save the file
-            from werkzeug.utils import secure_filename
-            filename = secure_filename(f"{artist.name}_{song_name}.mp3")
             music_folder = app.config.get('MUSIC_FOLDER', 'static/music')
-            file_path = os.path.join(music_folder, filename)
+            if not os.path.exists(music_folder):
+                os.makedirs(music_folder)
             
-            song_file.save(file_path)
+            from werkzeug.utils import secure_filename
             
-            # Create song record
-            new_song = Song(
-                name=song_name,
-                artist_id=artist_id,
-                file_path=file_path,
-                source='user_upload'
-            )
+            # Handle multiple file uploads (uploaded with same field name)
+            song_files = request.files.getlist('song_file')
             
-            db.session.add(new_song)
-            db.session.commit()
+            success_count = 0
+            skip_count = 0
+            error_count = 0
             
-            flash(f'Song {song_name} uploaded successfully', 'success')
+            for song_file in song_files:
+                if song_file and song_file.filename:
+                    # Extract song name from the filename
+                    original_filename = song_file.filename
+                    # Get rid of the extension and use as song name
+                    song_name = os.path.splitext(original_filename)[0]
+                    
+                    # Check if song already exists for this artist
+                    existing_song = Song.query.filter_by(name=song_name, artist_id=artist_id).first()
+                    if existing_song:
+                        logger.info(f"Song '{song_name}' already exists for {artist.name}. Skipping.")
+                        skip_count += 1
+                        continue
+                    
+                    # Save the file with a secure artist_songname format
+                    filename = secure_filename(f"{artist.name}_{original_filename}")
+                    file_path = os.path.join(music_folder, filename)
+                    
+                    try:
+                        song_file.save(file_path)
+                        
+                        # Create song record
+                        new_song = Song(
+                            name=song_name,
+                            artist_id=artist_id,
+                            file_path=file_path,
+                            source='user_upload'
+                        )
+                        
+                        db.session.add(new_song)
+                        success_count += 1
+                        logger.info(f"Successfully added song '{song_name}' for {artist.name}")
+                    except Exception as e:
+                        logger.error(f"Error saving file {original_filename}: {str(e)}")
+                        error_count += 1
+            
+            if success_count > 0:
+                db.session.commit()
+                
+                if success_count == 1:
+                    flash(f'Song uploaded successfully', 'success')
+                else:
+                    flash(f'{success_count} songs uploaded successfully', 'success')
+                    
+                if skip_count > 0:
+                    flash(f'{skip_count} songs were skipped (already exist)', 'warning')
+                if error_count > 0:
+                    flash(f'{error_count} songs failed to upload', 'danger')
+            else:
+                if skip_count > 0:
+                    flash(f'No new songs added. {skip_count} songs already exist.', 'warning')
+                else:
+                    flash('No valid songs were uploaded', 'danger')
+            
             return redirect(url_for('artist_page', artist_id=artist_id))
         
         except Exception as e:
-            logger.error(f"Error uploading song: {str(e)}")
-            flash(f'Error uploading song: {str(e)}', 'danger')
-            return redirect(url_for('artist_page', artist_id=artist_id) if artist_id else url_for('home'))
+            logger.error(f"Error uploading songs: {str(e)}")
+            flash(f'Error uploading songs: {str(e)}', 'danger')
+            return redirect(url_for('artist_page', artist_id=artist_id)) if 'artist_id' in locals() else redirect(url_for('home'))
 
     @app.errorhandler(404)
     def page_not_found(e):

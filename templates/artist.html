@@ -175,34 +175,31 @@
                         <div class="display-1 text-success mb-3">
                             <i class="fas fa-music"></i>
                         </div>
-                        <h4>Add New {{ artist.name }} Song</h4>
-                        <p class="text-muted">Upload MP3 files directly to the database</p>
+                        <h4>Add New {{ artist.name }} Songs</h4>
+                        <p class="text-muted">Upload MP3 files directly to the collection</p>
                     </div>
                     
                     <input type="hidden" name="artist_id" value="{{ artist.id }}">
                     
-                    <div class="mb-4">
-                        <label for="song-name" class="form-label fw-bold">Song Title</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-dark">
-                                <i class="fas fa-tag"></i>
-                            </span>
-                            <input type="text" class="form-control form-control-lg" id="song-name" name="song_name" 
-                                   placeholder="Enter song title..." required>
-                        </div>
-                    </div>
-                    
                     <div class="mb-3">
-                        <label for="song-file" class="form-label fw-bold">Song File (MP3)</label>
+                        <label for="song-file" class="form-label fw-bold">Song Files (MP3)</label>
                         <div class="input-group">
                             <span class="input-group-text bg-dark">
                                 <i class="fas fa-file-audio"></i>
                             </span>
                             <input type="file" class="form-control form-control-lg" id="song-file" name="song_file" 
-                                   accept="audio/*" required>
+                                   accept="audio/*" multiple required>
                         </div>
-                        <div class="form-text">
-                            <i class="fas fa-info-circle me-1"></i> MP3 files only. Maximum size: 10MB.
+                        <div class="form-text mb-2">
+                            <i class="fas fa-info-circle me-1"></i> MP3 files only. Maximum size: 10MB per file.
+                        </div>
+                        <div class="alert alert-info">
+                            <strong><i class="fas fa-lightbulb me-2"></i>Pro Tip:</strong> 
+                            <ul class="mb-0">
+                                <li>Song titles will be automatically extracted from filenames</li>
+                                <li>You can select multiple files at once</li>
+                                <li>Works on all modern browsers including mobile</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -212,7 +209,7 @@
                         <i class="fas fa-times me-1"></i> Cancel
                     </button>
                     <button type="submit" class="btn btn-success btn-lg">
-                        <i class="fas fa-cloud-upload-alt me-2"></i> Upload Song
+                        <i class="fas fa-cloud-upload-alt me-2"></i> Upload Songs
                     </button>
                 </div>
             </form>
