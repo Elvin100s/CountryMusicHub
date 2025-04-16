@@ -18,6 +18,25 @@ A beautiful website to browse, play, and download free country music. Features a
 
 This sets the upload limit to 300MB (314,572,800 bytes)
 
+### Using the Large Upload Server
+
+For uploading multiple large files (like 42 songs at once), use the dedicated Large Upload Server workflow:
+
+1. Click the dropdown next to the Run button
+2. Select "Start Large Upload Server"
+3. Wait for the server to start
+
+This server is configured with:
+- 300-second timeout (5 minutes)
+- 3 worker processes
+- 3 threads per worker
+- Optimized for handling multiple large files
+
+If you experience timeouts when uploading many files:
+1. Upload fewer files at once (15-20 files recommended)
+2. Ensure each file is under 300MB
+3. Check your internet connection stability
+
 ## Upload Songs
 
 1. Visit any artist's page
