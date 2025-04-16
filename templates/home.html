@@ -24,7 +24,14 @@
             <div class="card-body">
                 <h5 class="card-title">{{ artist.name }}</h5>
                 <p class="card-text text-truncate-2">{{ artist.description or 'Country music legend' }}</p>
-                <a href="{{ url_for('artist_page', artist_id=artist.id) }}" class="btn btn-primary">View Songs</a>
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('artist_page', artist_id=artist.id) }}" class="btn btn-primary">View Songs</a>
+                    {% if current_user.is_authenticated %}
+                    <button onclick="location.href='{{ url_for('artist_page', artist_id=artist.id) }}#upload'" class="btn btn-success">
+                        <i class="fas fa-upload me-2"></i>Upload Song
+                    </button>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>

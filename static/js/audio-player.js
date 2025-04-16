@@ -107,28 +107,48 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
                 
-                // Create a list of songs
-                const songList = document.createElement('div');
-                songList.className = 'list-group';
+                // Create a grid for song cards
+                const songGrid = document.createElement('div');
+                songGrid.className = 'row row-cols-1 row-cols-md-2 g-4';
                 
                 data.forEach(song => {
                     const songItem = document.createElement('div');
-                    songItem.className = 'list-group-item list-group-item-action d-flex justify-content-between align-items-center';
+                    songItem.className = 'col';
+                    
+                    const thumbnailUrl = song.thumbnail || 'https://source.unsplash.com/100x100/?music,country';
+                    const duration = song.duration || '';
                     
                     songItem.innerHTML = `
-                        <div>
-                            <h6 class="mb-1">${song.name}</h6>
-                            <small>Artist: ${song.artist} | Source: ${song.source} | License: ${song.license || 'Unknown'}</small>
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0 me-3">
+                                        <img src="${thumbnailUrl}" alt="${song.name}" class="rounded" style="width: 60px; height: 60px; object-fit: cover;">
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h5 class="card-title mb-1">${song.name}</h5>
+                                        <p class="card-text text-muted mb-0">
+                                            <strong>${song.artist}</strong>
+                                        </p>
+                                        <div class="d-flex justify-content-between align-items-center mt-2">
+                                            <span class="badge bg-dark">${song.source}</span>
+                                            ${duration ? `<small class="text-muted"><i class="fas fa-clock me-1"></i>${duration}</small>` : ''}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <button class="btn btn-primary w-100" onclick="addSongToArtist(${artistId}, '${song.name.replace(/'/g, "\\'")}', '${song.source_url}', '${song.source}')">
+                                    <i class="fas fa-plus-circle me-2"></i> Add to Collection
+                                </button>
+                            </div>
                         </div>
-                        <button class="btn btn-sm btn-primary" onclick="addSongToArtist(${artistId}, '${song.name}', '${song.source_url}', '${song.source}')">
-                            <i class="fa fa-plus"></i> Add
-                        </button>
                     `;
                     
-                    songList.appendChild(songItem);
+                    songGrid.appendChild(songItem);
                 });
                 
-                resultsContainer.appendChild(songList);
+                resultsContainer.appendChild(songGrid);
             })
             .catch(error => {
                 console.error('Error searching songs:', error);

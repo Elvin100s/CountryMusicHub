@@ -18,50 +18,66 @@
         <p class="lead">{{ artist.description or 'Country music legend' }}</p>
     </div>
     <div class="col-md-4 text-md-end">
-        <div class="btn-group">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#searchSongsModal">
-                <i class="fas fa-search me-2"></i>Find New Songs
-            </button>
-            {% if current_user.is_authenticated %}
-            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#uploadSongModal">
-                <i class="fas fa-upload me-2"></i>Upload Song
-            </button>
-            {% endif %}
-        </div>
+        <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#searchSongsModal">
+            <i class="fas fa-search me-2"></i>Find Songs on Tubidy
+        </button>
     </div>
 </div>
 
 <div class="card mb-4">
-    <div class="card-header">
+    <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Songs ({{ songs|length }})</h5>
+        {% if current_user.is_authenticated %}
+        <button id="upload" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#uploadSongModal">
+            <i class="fas fa-upload me-2"></i>Upload New Song for {{ artist.name }}
+        </button>
+        {% endif %}
     </div>
     <div class="card-body">
         {% if songs %}
-        <ul class="song-list">
+        <div class="row row-cols-1 row-cols-md-2 g-4">
             {% for song in songs %}
-            <li class="song-item bg-dark-subtle fade-in" style="animation-delay: {{ loop.index0 * 0.1 }}s">
-                <span class="song-name">{{ song.name }}</span>
-                <div class="song-controls">
-                    <button onclick="playSong({{ song.id }}, this)" class="btn btn-sm btn-outline-primary">
-                        <i class="fas fa-play"></i>
-                    </button>
-                    <button onclick="downloadSong({{ song.id }})" class="btn btn-sm btn-outline-success">
-                        <i class="fas fa-download"></i>
-                    </button>
-                    {% if current_user.is_authenticated %}
-                    <button onclick="confirmDeleteSong({{ song.id }}, '{{ song.name }}')" class="btn btn-sm btn-outline-danger">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                    <form id="delete-song-form-{{ song.id }}" action="{{ url_for('delete_song', song_id=song.id) }}" method="post" class="d-none"></form>
-                    {% endif %}
+            <div class="col fade-in" style="animation-delay: {{ loop.index0 * 0.1 }}s">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ song.name }}</h5>
+                        <p class="card-text text-muted small">
+                            <i class="fas fa-calendar-alt me-1"></i> Added: {{ song.created_at.strftime('%Y-%m-%d') }}
+                            {% if song.download_count %}
+                            <span class="ms-2"><i class="fas fa-download me-1"></i> {{ song.download_count }} downloads</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <div class="btn-group w-100">
+                            <button onclick="playSong({{ song.id }}, this)" class="btn btn-primary">
+                                <i class="fas fa-play me-1"></i> Play
+                            </button>
+                            <button onclick="downloadSong({{ song.id }})" class="btn btn-success">
+                                <i class="fas fa-download me-1"></i> Download
+                            </button>
+                            {% if current_user.is_authenticated %}
+                            <button onclick="confirmDeleteSong({{ song.id }}, '{{ song.name }}')" class="btn btn-danger">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <form id="delete-song-form-{{ song.id }}" action="{{ url_for('delete_song', song_id=song.id) }}" method="post" class="d-none"></form>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
-            </li>
+            </div>
             {% endfor %}
-        </ul>
+        </div>
         {% else %}
-        <div class="alert alert-info">
-            <i class="fas fa-info-circle me-2"></i>
-            No songs available for this artist yet. Click "Find New Songs" to search for and add songs from free, legal sources.
+        <div class="text-center py-5">
+            <i class="fas fa-music fa-4x mb-3 text-muted"></i>
+            <h4>No songs available yet</h4>
+            <p class="text-muted">Search for songs or upload your own below</p>
+            {% if current_user.is_authenticated %}
+            <button class="btn btn-lg btn-success mt-3" data-bs-toggle="modal" data-bs-target="#uploadSongModal">
+                <i class="fas fa-upload me-2"></i>Upload First Song
+            </button>
+            {% endif %}
         </div>
         {% endif %}
     </div>
@@ -71,20 +87,63 @@
 <div class="modal fade" id="searchSongsModal" tabindex="-1" aria-labelledby="searchSongsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="searchSongsModalLabel">Search for Songs</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="searchSongsModalLabel">
+                    <i class="fas fa-music me-2"></i>Find Songs on Tubidy
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" id="song-search" placeholder="Search for country music songs...">
-                    <button class="btn btn-primary" type="button" onclick="searchSongs({{ artist.id }}, '{{ artist.name }}')">
-                        <i class="fas fa-search me-2"></i>Search
-                    </button>
+                <div class="mb-3">
+                    <label for="song-search" class="form-label fw-bold">Search for songs by {{ artist.name }} or similar artists</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-dark">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" class="form-control form-control-lg" id="song-search" 
+                               placeholder="Enter song title or keywords..." 
+                               autocomplete="off">
+                        <button class="btn btn-primary" type="button" onclick="searchSongs({{ artist.id }}, '{{ artist.name }}')">
+                            Search Tubidy
+                        </button>
+                    </div>
+                    <div class="form-text">Search results are provided by Tubidy and other free music sources</div>
                 </div>
                 
-                <div id="search-results" class="mt-3">
-                    <!-- Search results will appear here -->
+                <div class="mt-4">
+                    <ul class="nav nav-tabs" id="searchTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="results-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#results" type="button" role="tab" 
+                                    aria-controls="results" aria-selected="true">
+                                Search Results
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="popular-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#popular" type="button" role="tab" 
+                                    aria-controls="popular" aria-selected="false">
+                                Popular Songs
+                            </button>
+                        </li>
+                    </ul>
+                    <div class="tab-content p-3 border border-top-0 rounded-bottom" id="searchTabsContent">
+                        <div class="tab-pane fade show active" id="results" role="tabpanel" aria-labelledby="results-tab">
+                            <div id="search-results">
+                                <div class="text-center py-5">
+                                    <i class="fas fa-search fa-3x mb-3 text-muted"></i>
+                                    <h5 class="text-muted">Enter your search above to find songs</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="popular" role="tabpanel" aria-labelledby="popular-tab">
+                            <div class="d-flex justify-content-center py-3">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading popular songs...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -98,30 +157,56 @@
 <div class="modal fade" id="uploadSongModal" tabindex="-1" aria-labelledby="uploadSongModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="uploadSongModalLabel">Upload Song for {{ artist.name }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="uploadSongModalLabel">
+                    <i class="fas fa-upload me-2"></i> Upload Song for {{ artist.name }}
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{{ url_for('upload_song') }}" method="post" enctype="multipart/form-data" id="upload-song-form">
                 <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <div class="display-1 text-success mb-3">
+                            <i class="fas fa-music"></i>
+                        </div>
+                        <h4>Add New {{ artist.name }} Song</h4>
+                        <p class="text-muted">Upload MP3 files directly to the database</p>
+                    </div>
+                    
                     <input type="hidden" name="artist_id" value="{{ artist.id }}">
                     
-                    <div class="mb-3">
-                        <label for="song-name" class="form-label">Song Name</label>
-                        <input type="text" class="form-control" id="song-name" name="song_name" required>
+                    <div class="mb-4">
+                        <label for="song-name" class="form-label fw-bold">Song Title</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark">
+                                <i class="fas fa-tag"></i>
+                            </span>
+                            <input type="text" class="form-control form-control-lg" id="song-name" name="song_name" 
+                                   placeholder="Enter song title..." required>
+                        </div>
                     </div>
                     
                     <div class="mb-3">
-                        <label for="song-file" class="form-label">Song File (MP3)</label>
-                        <input type="file" class="form-control" id="song-file" name="song_file" accept="audio/*" required>
-                        <div class="form-text">Upload MP3 files only. Maximum file size: 10MB.</div>
+                        <label for="song-file" class="form-label fw-bold">Song File (MP3)</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark">
+                                <i class="fas fa-file-audio"></i>
+                            </span>
+                            <input type="file" class="form-control form-control-lg" id="song-file" name="song_file" 
+                                   accept="audio/*" required>
+                        </div>
+                        <div class="form-text">
+                            <i class="fas fa-info-circle me-1"></i> MP3 files only. Maximum size: 10MB.
+                        </div>
                     </div>
                 </div>
                 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-success">
-                        <i class="fas fa-upload me-2"></i>Upload Song
+                <div class="modal-footer justify-content-between bg-light">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="fas fa-cloud-upload-alt me-2"></i> Upload Song
                     </button>
                 </div>
             </form>
