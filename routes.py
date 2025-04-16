@@ -7,7 +7,7 @@ import os
 # Set max upload size from environment or default to 300MB
 MAX_CONTENT_LENGTH = int(os.getenv('BODY_SIZE_LIMIT', 314572800))  # 300MB in bytes
 from app import db, app
-from models import Artist, Song
+from models import Artist, Song, Playlist
 from music_api import search_songs, download_song
 
 def get_artist_image(artist_name):
