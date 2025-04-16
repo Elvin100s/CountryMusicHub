@@ -46,6 +46,8 @@ with app.app_context():
     # Import and register routes
     from routes import register_routes
     from admin import register_admin_routes
+    from playlist_routes import register_playlist_routes
     
     register_routes(app)
     register_admin_routes(app)
+    register_playlist_routes(app)
