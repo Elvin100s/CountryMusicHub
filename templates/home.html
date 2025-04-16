@@ -37,7 +37,8 @@
         <div class="card h-100 artist-card shadow-sm">
             <!-- Use different placeholder images for each artist -->
             <div class="position-relative">
-                <img src="https://source.unsplash.com/random/400x300/?country,music,{{ artist.name|urlencode }}" 
+                <img src="{{ url_for('static', filename='img/artists/' + artist.name.lower().replace(' ', '_') + '.jpg') }}"
+                     onerror="this.src='{{ url_for('static', filename='img/artists/placeholder.jpg') }}'"
                      class="card-img-top" alt="{{ artist.name }}" 
                      style="height: 160px; object-fit: cover;">
                 <div class="position-absolute bottom-0 start-0 w-100 bg-dark bg-opacity-75 text-white p-2">
