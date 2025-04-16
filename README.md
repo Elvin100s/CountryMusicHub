@@ -52,30 +52,6 @@ If you experience timeouts when uploading many files:
 - Automatic song name extraction
 - Mobile-friendly interface
 
-## Artist Images
-Artist images are stored in `static/img/artists/` with the following files:
-- bryan_adams.jpg
-- dolly_parton.jpg 
-- don_williams.jpg
-- faith_hill.jpg
-- garth_brooks.jpg  
-- george_jones.jpg
-- johnny_cash.jpg
-- keith_urban.jpg
-- kenny_rogers.jpg
-- lionel_richie.jpg (needs to be downloaded)
-- patsy_cline.jpg
-- reba_mcentire.jpg
-- shania_twain.jpg
-- tammy_wynette.jpg
-- tim_mcgraw.jpg
-- willie_nelson.jpg
-
-Missing or failed image downloads will use a default placeholder image. To refresh artist images, run:
-```bash
-python update_artist_images.py
-```
-
 ## Troubleshooting
 
 If uploads fail:
