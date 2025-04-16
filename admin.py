@@ -153,8 +153,13 @@ def register_admin_routes(app):
             existing_song = Song.query.filter_by(name=song_name, artist_id=artist_id).first()
             if existing_song:
                 flash('Song already exists for this artist', 'danger')
-                artists = Artist.query.order_by(Artist.name).all()
-                return render_template('admin/upload.html', artists=artists)
+                if request.referrer and 'artist' in request.referrer:
+                    # If coming from artist page
+                    return redirect(url_for('artist_page', artist_id=artist_id))
+                else:
+                    # If coming from admin upload page
+                    artists = Artist.query.order_by(Artist.name).all()
+                    return render_template('admin/upload.html', artists=artists)
             
             # Save the file
             filename = secure_filename(f"{artist.name}_{song_name}.mp3")
@@ -175,11 +180,22 @@ def register_admin_routes(app):
                 db.session.commit()
                 
                 flash(f'Song {song_name} uploaded successfully', 'success')
-                return redirect(url_for('admin_dashboard'))
+                
+                # Redirect based on where the form was submitted from
+                if request.referrer and 'artist' in request.referrer:
+                    # If coming from artist page, redirect back to artist page
+                    return redirect(url_for('artist_page', artist_id=artist_id))
+                else:
+                    # If coming from admin upload page, redirect to admin dashboard
+                    return redirect(url_for('admin_dashboard'))
             
             except Exception as e:
                 logger.error(f"Error uploading song: {str(e)}")
                 flash(f'Error uploading song: {str(e)}', 'danger')
+                
+                # Redirect based on where the form was submitted from
+                if request.referrer and 'artist' in request.referrer:
+                    return redirect(url_for('artist_page', artist_id=artist_id))
         
         artists = Artist.query.order_by(Artist.name).all()
         return render_template('admin/upload.html', artists=artists)
