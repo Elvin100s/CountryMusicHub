@@ -44,7 +44,7 @@ A beautiful website to browse, play, and download free, legal country music feat
    pip install psycopg2-binary==2.9.9 requests==2.31.0 SQLAlchemy==2.0.23 Werkzeug==2.3.7
    pip install email-validator==2.0.0 trafilatura==1.6.1
    ```
-   
+
    Alternatively, create a requirements.txt file with the following content:
    ```
    email-validator==2.0.0
@@ -58,7 +58,7 @@ A beautiful website to browse, play, and download free, legal country music feat
    trafilatura==1.6.1
    Werkzeug==2.3.7
    ```
-   
+
    And install using:
    ```bash
    pip install -r requirements.txt
@@ -75,7 +75,7 @@ A beautiful website to browse, play, and download free, legal country music feat
    ```bash
    # Login to PostgreSQL
    sudo -u postgres psql
-   
+
    # Inside PostgreSQL command prompt
    CREATE DATABASE country_music;
    CREATE USER countryuser WITH PASSWORD 'yourpassword';
@@ -87,10 +87,10 @@ A beautiful website to browse, play, and download free, legal country music feat
    ```bash
    # For Linux/macOS
    export DATABASE_URL=postgresql://countryuser:yourpassword@localhost/country_music
-   
+
    # For Windows (Command Prompt)
    set DATABASE_URL=postgresql://countryuser:yourpassword@localhost/country_music
-   
+
    # For Windows (PowerShell)
    $env:DATABASE_URL="postgresql://countryuser:yourpassword@localhost/country_music"
    ```
@@ -104,17 +104,17 @@ A beautiful website to browse, play, and download free, legal country music feat
    This will create the database tables and add some default country artists including Bryan Adams.
 
 2. **Start the application** using one of these methods:
-   
+
    **Method A: Using Flask's development server** (good for development):
    ```bash
    # Set Flask environment variables
    export FLASK_APP=main.py
    export FLASK_ENV=development
-   
+
    # Run the development server (with hot-reload)
    flask run --host=0.0.0.0 --port=5000
    ```
-   
+
    **Method B: Using Gunicorn** (better for production):
    ```bash
    gunicorn --bind 0.0.0.0:5000 main:app
@@ -122,28 +122,76 @@ A beautiful website to browse, play, and download free, legal country music feat
 
 3. **Open your browser** and go to http://localhost:5000
 
-### Understanding the Directory Structure
+### Understanding the Directory Structure and Files
 
 The application is organized as follows:
 
 ```
 country-music-paradise/
-├── static/                 # Static assets
-│   ├── css/                # CSS stylesheets
-│   ├── js/                 # JavaScript files
-│   ├── img/                # Images
-│   └── music/              # Where uploaded songs are stored
-├── templates/              # HTML templates
-├── admin.py                # Admin routes and functions
-├── main.py                 # Main application entry point
-├── models.py               # Database models
-├── music_api.py            # Music API integration
-├── reset_db.py             # Database initialization
-├── routes.py               # Main application routes
-├── backup_site.py          # Site backup utility
-├── bulk_upload.py          # Bulk song upload utility
-└── fix_paths.py            # Fix song paths utility
+├── static/                 # Static assets directory
+│   ├── css/               # CSS stylesheets
+│   │   └── style.css      # Main stylesheet for the application
+│   ├── js/                # JavaScript files
+│   │   ├── admin.js       # Admin dashboard functionality
+│   │   ├── audio-player.js # Custom audio player implementation
+│   │   └── sw.js          # Service Worker for offline functionality
+│   ├── img/               # Images directory
+│   └── music/             # Where uploaded songs are stored
+├── templates/             # HTML templates directory
+│   ├── admin/            # Admin-specific templates
+│   │   ├── dashboard.html # Admin control panel
+│   │   ├── login.html    # Admin login page
+│   │   └── upload.html   # Song upload form
+│   ├── artist.html       # Artist profile page
+│   ├── base.html         # Base template with common elements
+│   └── home.html         # Homepage template
 ```
+
+### Core Application Files
+
+- `main.py`: Main entry point of the application, starts the Flask server
+- `app.py`: Core application configuration, database setup, and middleware
+- `models.py`: Database models for Artists, Songs, Playlists, and Admin users
+- `routes.py`: Main application routes for browsing and playing music
+- `admin.py`: Admin-specific routes for managing content
+- `playlist_routes.py`: Routes for playlist creation and management
+- `music_api.py`: Integration with music APIs for song discovery
+
+### Utility Scripts
+
+- `backup_site.py`: Creates complete backups of the database and music files
+- `bulk_upload.py`: Utility for batch uploading multiple songs at once
+- `fix_paths.py`: Repairs song file paths after moving/restoring backups
+- `reset_db.py`: Initializes the database with default data
+
+### Configuration Files
+
+- `.replit`: Replit-specific configuration for running the application
+- `pyproject.toml`: Python project dependencies and metadata
+- `replit.nix`: Nix package configuration for Replit environment
+
+Each file serves a specific purpose in making the application modular and maintainable:
+
+1. **Core Files**:
+   - `main.py` and `app.py` handle the application startup and configuration
+   - `models.py` defines the database structure
+   - `routes.py` manages user interactions and page rendering
+
+2. **Feature Modules**:
+   - `admin.py` provides the admin interface
+   - `playlist_routes.py` handles playlist functionality
+   - `music_api.py` manages music discovery and downloads
+
+3. **Maintenance Tools**:
+   - `backup_site.py` ensures data can be safely backed up
+   - `bulk_upload.py` makes it easy to add multiple songs
+   - `fix_paths.py` maintains database integrity
+
+4. **Templates and Static Files**:
+   - HTML templates in `/templates` define the user interface
+   - CSS and JavaScript in `/static` handle styling and interactivity
+   - Uploaded music files are stored in `/static/music`
+
 
 ### How The Components Connect
 
@@ -220,7 +268,7 @@ This option gives you complete control over your music website and database.
    ```bash
    # If using scp (from your local machine)
    scp -r /path/to/your/local/project/* user@your-server-ip:/var/www/countrymusic/
-   
+
    # If using git
    cd /var/www/countrymusic
    git clone https://github.com/yourusername/country-music-paradise.git .
@@ -247,13 +295,13 @@ This option gives you complete control over your music website and database.
    ```bash
    sudo nano /etc/systemd/system/countrymusic.service
    ```
-   
+
    Add the following content:
    ```
    [Unit]
    Description=Country Music Paradise
    After=network.target
-   
+
    [Service]
    User=countrymusic
    Group=www-data
@@ -262,7 +310,7 @@ This option gives you complete control over your music website and database.
    Environment="DATABASE_URL=postgresql://countryuser:your-secure-password@localhost/countrymusic"
    ExecStart=/var/www/countrymusic/venv/bin/gunicorn --workers 3 --bind 0.0.0.0:5000 main:app
    Restart=always
-   
+
    [Install]
    WantedBy=multi-user.target
    ```
@@ -271,25 +319,25 @@ This option gives you complete control over your music website and database.
    ```bash
    sudo nano /etc/nginx/sites-available/countrymusic
    ```
-   
+
    Add the following configuration:
    ```
    server {
        listen 80;
        server_name yourdomain.com www.yourdomain.com;
-       
+
        location / {
            proxy_pass http://localhost:5000;
            proxy_set_header Host $host;
            proxy_set_header X-Real-IP $remote_addr;
        }
-       
+
        location /static {
            alias /var/www/countrymusic/static;
        }
    }
    ```
-   
+
    Enable the site:
    ```bash
    sudo ln -s /etc/nginx/sites-available/countrymusic /etc/nginx/sites-enabled
@@ -326,7 +374,7 @@ PythonAnywhere offers a simpler deployment process and includes PostgreSQL hosti
 2. **Upload your project files**:
    - Use the Files tab to create a new directory (e.g., countrymusic)
    - Upload your project files or clone from GitHub
-   
+
 3. **Set up a PostgreSQL database**:
    - Go to the Databases tab
    - Create a new PostgreSQL database
@@ -337,7 +385,7 @@ PythonAnywhere offers a simpler deployment process and includes PostgreSQL hosti
    - Click "Add a new web app"
    - Select "Manual configuration" and "Python 3.8" (or newer)
    - Set the path to your project directory
-   
+
 5. **Configure the WSGI file**:
    - Edit the WSGI file (there will be a link in the Web tab)
    - Delete everything except the Flask section
@@ -347,7 +395,7 @@ PythonAnywhere offers a simpler deployment process and includes PostgreSQL hosti
      path = '/home/yourusername/countrymusic'
      if path not in sys.path:
          sys.path.append(path)
-     
+
      from main import app as application
      import os
      os.environ['DATABASE_URL'] = 'postgresql://yourusername:password@yourusername-postgres.pythonanywhere-services.com:10001/yourusername$countrymusic'
@@ -519,7 +567,7 @@ When you download the code as a ZIP file, it will NOT include your database or u
    # Run the included fix_paths.py script
    python fix_paths.py
    ```
-   
+
    This script automatically corrects all file paths in the database to match your current server setup.
 
 ### Quick Database Check
