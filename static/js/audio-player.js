@@ -323,3 +323,166 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     };
 });
+
+class AudioPlayer {
+    constructor() {
+        this.audio = new Audio();
+        this.playlist = [];
+        this.currentIndex = 0;
+        this.isPlaying = false;
+        this.volume = 1;
+        
+        // DOM Elements
+        this.player = document.getElementById('globalPlayer');
+        this.playPauseBtn = document.getElementById('playPauseBtn');
+        this.prevBtn = document.getElementById('prevBtn');
+        this.nextBtn = document.getElementById('nextBtn');
+        this.volumeSlider = document.getElementById('volumeSlider');
+        this.currentSongTitle = document.getElementById('currentSongTitle');
+        this.currentSongArtist = document.getElementById('currentSongArtist');
+        this.currentSongImage = document.getElementById('currentSongImage');
+        
+        this.initializePlayer();
+        this.setupEventListeners();
+    }
+    
+    initializePlayer() {
+        // Set initial volume
+        this.audio.volume = this.volume;
+        this.volumeSlider.value = this.volume * 100;
+        
+        // Show player when a song is loaded
+        this.player.classList.remove('d-none');
+    }
+    
+    setupEventListeners() {
+        // Play/Pause
+        this.playPauseBtn.addEventListener('click', () => this.togglePlay());
+        
+        // Previous/Next
+        this.prevBtn.addEventListener('click', () => this.playPrevious());
+        this.nextBtn.addEventListener('click', () => this.playNext());
+        
+        // Volume control
+        this.volumeSlider.addEventListener('input', (e) => {
+            this.volume = e.target.value / 100;
+            this.audio.volume = this.volume;
+        });
+        
+        // Audio events
+        this.audio.addEventListener('timeupdate', () => this.updateProgress());
+        this.audio.addEventListener('ended', () => this.playNext());
+        this.audio.addEventListener('error', (e) => this.handleError(e));
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && !e.target.matches('input, textarea')) {
+                e.preventDefault();
+                this.togglePlay();
+            }
+        });
+    }
+    
+    loadSong(song) {
+        this.audio.src = song.url;
+        this.currentSongTitle.textContent = song.title;
+        this.currentSongArtist.textContent = song.artist;
+        this.currentSongImage.src = song.image || '/static/img/default-album.jpg';
+        this.currentSongImage.alt = `${song.title} album art`;
+        
+        // Update play button
+        this.playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+        this.isPlaying = false;
+    }
+    
+    togglePlay() {
+        if (this.audio.paused) {
+            this.audio.play();
+            this.playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            this.isPlaying = true;
+        } else {
+            this.audio.pause();
+            this.playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+            this.isPlaying = false;
+        }
+    }
+    
+    playPrevious() {
+        if (this.playlist.length === 0) return;
+        
+        this.currentIndex = (this.currentIndex - 1 + this.playlist.length) % this.playlist.length;
+        this.loadSong(this.playlist[this.currentIndex]);
+        if (this.isPlaying) this.audio.play();
+    }
+    
+    playNext() {
+        if (this.playlist.length === 0) return;
+        
+        this.currentIndex = (this.currentIndex + 1) % this.playlist.length;
+        this.loadSong(this.playlist[this.currentIndex]);
+        if (this.isPlaying) this.audio.play();
+    }
+    
+    updateProgress() {
+        const progress = (this.audio.currentTime / this.audio.duration) * 100;
+        // Update progress bar if it exists
+        const progressBar = document.querySelector('.progress-bar');
+        if (progressBar) {
+            progressBar.style.width = `${progress}%`;
+        }
+    }
+    
+    handleError(error) {
+        console.error('Audio playback error:', error);
+        // Show error toast
+        const toast = document.createElement('div');
+        toast.className = 'toast align-items-center text-white bg-danger border-0';
+        toast.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body">
+                    Error playing audio. Please try again.
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        `;
+        document.querySelector('.toast-container').appendChild(toast);
+        new bootstrap.Toast(toast, { autohide: true, delay: 3000 }).show();
+    }
+    
+    // Public methods for external use
+    playSong(song) {
+        this.loadSong(song);
+        this.audio.play();
+        this.playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        this.isPlaying = true;
+    }
+    
+    addToPlaylist(song) {
+        this.playlist.push(song);
+    }
+    
+    clearPlaylist() {
+        this.playlist = [];
+        this.currentIndex = 0;
+    }
+}
+
+// Initialize global player
+const player = new AudioPlayer();
+
+// Make player available globally
+window.audioPlayer = player;
+
+// Add click handlers to song items
+document.addEventListener('click', (e) => {
+    const songItem = e.target.closest('.song-item');
+    if (songItem) {
+        const songData = {
+            title: songItem.dataset.title,
+            artist: songItem.dataset.artist,
+            url: songItem.dataset.url,
+            image: songItem.dataset.image
+        };
+        player.playSong(songData);
+    }
+});
