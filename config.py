@@ -20,8 +20,14 @@ class TestingConfig(Config):
         'sqlite:///test_country_music.db'
 
 class ProductionConfig(Config):
+    # For PythonAnywhere, we'll use MySQL
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-        'sqlite:///country_music.db'
+        'mysql+pymysql://{username}:{password}@{hostname}/{databasename}'.format(
+            username=os.environ.get('MYSQL_USERNAME', 'your_username'),
+            password=os.environ.get('MYSQL_PASSWORD', 'your_password'),
+            hostname=os.environ.get('MYSQL_HOST', 'your_username.mysql.pythonanywhere-services.com'),
+            databasename=os.environ.get('MYSQL_DATABASE', 'your_username$default')
+        )
     
     @classmethod
     def init_app(cls, app):
