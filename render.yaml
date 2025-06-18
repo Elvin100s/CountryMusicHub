@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: country-music-hub
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: FLASK_CONFIG
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: PYTHON_VERSION
+        value: 3.10.0
+
+databases:
+  - name: country-music-db
+    databaseName: country_music
+    user: country_music_user
+    plan: free 

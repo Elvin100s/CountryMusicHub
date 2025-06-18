@@ -1,4 +1,5 @@
 import os
+import re
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard-to-guess-string'
@@ -20,14 +21,10 @@ class TestingConfig(Config):
         'sqlite:///test_country_music.db'
 
 class ProductionConfig(Config):
-    # For PythonAnywhere, we'll use MySQL
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-        'mysql+pymysql://{username}:{password}@{hostname}/{databasename}'.format(
-            username=os.environ.get('MYSQL_USERNAME', 'your_username'),
-            password=os.environ.get('MYSQL_PASSWORD', 'your_password'),
-            hostname=os.environ.get('MYSQL_HOST', 'your_username.mysql.pythonanywhere-services.com'),
-            databasename=os.environ.get('MYSQL_DATABASE', 'your_username$default')
-        )
+    # For Render, we'll use PostgreSQL
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+    if SQLALCHEMY_DATABASE_URI and SQLALCHEMY_DATABASE_URI.startswith("postgres://"):
+        SQLALCHEMY_DATABASE_URI = SQLALCHEMY_DATABASE_URI.replace("postgres://", "postgresql://", 1)
     
     @classmethod
     def init_app(cls, app):

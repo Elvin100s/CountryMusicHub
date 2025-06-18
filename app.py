@@ -46,3 +46,9 @@ def create_app(config_name='default'):
         return app
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
+
+if __name__ == '__main__':
+    # Get the port from environment variable or use 8080
+    port = int(os.environ.get('PORT', 8080))
+    # Run the app
+    app.run(host='0.0.0.0', port=port)
