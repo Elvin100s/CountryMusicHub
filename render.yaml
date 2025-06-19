@@ -2,11 +2,12 @@ services:
   - type: web
     name: country-music-hub
     env: python
-    buildCommand: pip install -r requirements.txt
+    buildCommand: |
+      python3.10 -m venv .venv
+      . .venv/bin/activate
+      pip install -r requirements.txt
     startCommand: gunicorn app:app
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.10.13
       - key: FLASK_CONFIG
         value: production
       - key: SECRET_KEY
