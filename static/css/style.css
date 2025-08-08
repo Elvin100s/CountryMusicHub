@@ -41,11 +41,27 @@ h1, h2, h3, h4, h5, h6 {
 .navbar {
     background-color: var(--darker-bg) !important;
     border-bottom: 1px solid var(--border-color);
+    backdrop-filter: blur(6px);
 }
 
 .navbar-brand {
     font-weight: 700;
     letter-spacing: -0.5px;
+}
+
+.navbar .nav-link.active {
+    color: var(--primary-color) !important;
+}
+
+/* Hero section */
+.hero-section {
+    background: radial-gradient(1200px 600px at 50% 10%, rgba(78,205,196,0.2), transparent),
+                linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0));
+    border: 1px solid var(--border-color);
+}
+
+.hero-title {
+    letter-spacing: -1px;
 }
 
 /* Cards */
@@ -202,8 +218,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-primary:hover {
-    background-color: darken(var(--primary-color), 10%);
-    border-color: darken(var(--primary-color), 10%);
+    filter: brightness(0.95);
+    box-shadow: 0 6px 16px rgba(78, 205, 196, 0.3);
 }
 
 /* Animations */

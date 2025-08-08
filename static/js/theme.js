@@ -7,8 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
         html.setAttribute('data-bs-theme', savedTheme);
-        updateThemeIcon(savedTheme);
     }
+    // Ensure icon reflects current theme on first load
+    updateThemeIcon(html.getAttribute('data-bs-theme'));
     
     // Theme toggle click handler
     themeToggle.addEventListener('click', () => {
