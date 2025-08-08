@@ -49,6 +49,10 @@
                     <button class="btn btn-outline-light btn-sm" id="themeToggle" aria-label="Toggle color theme">
                         <i class="fas fa-moon"></i>
                     </button>
+                    <!-- Vintage Mode Toggle -->
+                    <button class="btn btn-outline-warning btn-sm" id="vintageToggle" aria-label="Toggle vintage mode">
+                        <i class="fas fa-record-vinyl"></i>
+                    </button>
                     
                     {% if current_user.is_authenticated %}
                     <div class="dropdown">
@@ -109,7 +113,7 @@
             <div class="row align-items-center">
                 <div class="col-md-4">
                     <div class="d-flex align-items-center">
-                        <img id="currentSongImage" src="" alt="" class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                        <img id="currentSongImage" src="" alt="" class="rounded me-3 vinyl-art" style="width: 50px; height: 50px; object-fit: cover;">
                         <div>
                             <h6 class="mb-0" id="currentSongTitle">No song playing</h6>
                             <small class="text-muted" id="currentSongArtist">Select a song to play</small>
@@ -172,6 +176,7 @@
     <!-- Custom JS -->
     <script src="{{ url_for('static', filename='js/theme.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/audio-player.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/vintage.js') }}" defer></script>
     {% block scripts %}{% endblock %}
 </body>
 </html>

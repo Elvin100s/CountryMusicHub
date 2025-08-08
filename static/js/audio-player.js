@@ -391,7 +391,8 @@ class AudioPlayer {
         this.currentSongImage.alt = `${song.title} album art`;
         
         // Update play button
-        this.playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+        this.playPauseBtn.innerHTML = '<i class=\"fas fa-play\"></i>';
+        this.currentSongImage.classList.remove('spin');
         this.isPlaying = false;
     }
     
@@ -399,10 +400,12 @@ class AudioPlayer {
         if (this.audio.paused) {
             this.audio.play();
             this.playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            this.currentSongImage.classList.add('spin');
             this.isPlaying = true;
         } else {
             this.audio.pause();
             this.playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+            this.currentSongImage.classList.remove('spin');
             this.isPlaying = false;
         }
     }
@@ -453,7 +456,8 @@ class AudioPlayer {
     playSong(song) {
         this.loadSong(song);
         this.audio.play();
-        this.playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        this.playPauseBtn.innerHTML = '<i class=\"fas fa-pause\"></i>';
+        this.currentSongImage.classList.add('spin');
         this.isPlaying = true;
     }
     
