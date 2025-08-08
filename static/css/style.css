@@ -368,3 +368,44 @@ body.vintage-mode {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
 }
+
+/* Cassette progress UI */
+.cassette {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.reel {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid var(--border-color);
+    position: relative;
+}
+.reel::before, .reel::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 2px; height: 8px;
+    background: var(--muted-text);
+    transform-origin: bottom center;
+}
+.reel::before { transform: translate(-50%, -50%) rotate(0deg); }
+.reel::after { transform: translate(-50%, -50%) rotate(90deg); }
+
+.tape-container { display: flex; align-items: center; }
+.tape-bar {
+    position: relative;
+    height: 6px;
+    background: var(--border-color);
+    border-radius: 3px;
+    overflow: hidden;
+}
+.tape-progress {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+}
+
+/* Spin reels when playing by reusing .spin animation on wrapper */
+.cassette.spin .reel { animation: spin 1s linear infinite; }

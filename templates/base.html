@@ -53,6 +53,10 @@
                     <button class="btn btn-outline-warning btn-sm" id="vintageToggle" aria-label="Toggle vintage mode">
                         <i class="fas fa-record-vinyl"></i>
                     </button>
+                    <!-- Tape Hiss Toggle -->
+                    <button class="btn btn-outline-secondary btn-sm" id="hissToggle" aria-label="Toggle tape hiss">
+                        <i class="fas fa-waveform"></i>
+                    </button>
                     
                     {% if current_user.is_authenticated %}
                     <div class="dropdown">
@@ -132,6 +136,16 @@
                             <i class="fas fa-step-forward"></i>
                         </button>
                     </div>
+                    <!-- Cassette-style progress -->
+                    <div id="cassette" class="cassette mt-2">
+                        <div id="leftReel" class="reel"></div>
+                        <div class="tape-container flex-grow-1">
+                            <div id="tapeBar" class="tape-bar">
+                                <div id="tapeProgress" class="tape-progress"></div>
+                            </div>
+                        </div>
+                        <div id="rightReel" class="reel"></div>
+                    </div>
                 </div>
                 <div class="col-md-4">
                     <div class="d-flex align-items-center gap-2">
@@ -177,6 +191,7 @@
     <script src="{{ url_for('static', filename='js/theme.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/audio-player.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/vintage.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/hiss.js') }}" defer></script>
     {% block scripts %}{% endblock %}
 </body>
 </html>

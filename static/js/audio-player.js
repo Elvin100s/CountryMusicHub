@@ -409,13 +409,17 @@ class AudioPlayer {
     togglePlay() {
         if (this.audio.paused) {
             this.audio.play();
-            this.playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            this.playPauseBtn.innerHTML = '<i class=\"fas fa-pause\"></i>';
             this.currentSongImage.classList.add('spin');
+            const tape = document.getElementById('cassette');
+            if (tape) tape.classList.add('spin');
             this.isPlaying = true;
         } else {
             this.audio.pause();
-            this.playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+            this.playPauseBtn.innerHTML = '<i class=\"fas fa-play\"></i>';
             this.currentSongImage.classList.remove('spin');
+            const tape = document.getElementById('cassette');
+            if (tape) tape.classList.remove('spin');
             this.isPlaying = false;
         }
     }
@@ -443,6 +447,12 @@ class AudioPlayer {
         if (progressBar) {
             progressBar.style.width = `${progress}%`;
         }
+        // Update cassette UI
+        const tape = document.getElementById('cassette');
+        const tapeProgress = document.getElementById('tapeProgress');
+        if (tape && tapeProgress && !isNaN(progress)) {
+            tapeProgress.style.width = `${progress}%`;
+        }
     }
     
     handleError(error) {
@@ -468,6 +478,8 @@ class AudioPlayer {
         this.audio.play();
         this.playPauseBtn.innerHTML = '<i class=\"fas fa-pause\"></i>';
         this.currentSongImage.classList.add('spin');
+        const tape = document.getElementById('cassette');
+        if (tape) tape.classList.add('spin');
         this.isPlaying = true;
     }
     
