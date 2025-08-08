@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Serene Sounds of Old</title>
+    <meta name="color-scheme" content="dark light">
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -19,7 +20,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top border-bottom border-secondary">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="{{ url_for('home') }}">
-                <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="Country Music Hub" height="40" class="me-2">
+                <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="Country Music Hub" height="40" class="me-2" loading="lazy">
                 <span class="d-none d-md-inline fw-bold">Country Music Hub</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -28,25 +29,33 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('home') }}">
+                        <a class="nav-link {{ 'active' if request.endpoint == 'home' else '' }}" aria-current="{{ 'page' if request.endpoint == 'home' else '' }}" href="{{ url_for('home') }}">
                             <i class="fas fa-home me-1"></i> Home
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('artists') }}">
+                        <a class="nav-link {{ 'active' if request.endpoint == 'artists' else '' }}" aria-current="{{ 'page' if request.endpoint == 'artists' else '' }}" href="{{ url_for('artists') }}">
                             <i class="fas fa-users me-1"></i> Artists
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('playlists') }}">
+                        <a class="nav-link {{ 'active' if request.endpoint == 'playlists' else '' }}" aria-current="{{ 'page' if request.endpoint == 'playlists' else '' }}" href="{{ url_for('playlists') }}">
                             <i class="fas fa-list me-1"></i> Playlists
                         </a>
                     </li>
                 </ul>
                 <div class="d-flex align-items-center gap-3">
                     <!-- Theme Toggle -->
-                    <button class="btn btn-outline-light btn-sm" id="themeToggle">
+                    <button class="btn btn-outline-light btn-sm" id="themeToggle" aria-label="Toggle color theme">
                         <i class="fas fa-moon"></i>
+                    </button>
+                    <!-- Vintage Mode Toggle -->
+                    <button class="btn btn-outline-warning btn-sm" id="vintageToggle" aria-label="Toggle vintage mode">
+                        <i class="fas fa-record-vinyl"></i>
+                    </button>
+                    <!-- Tape Hiss Toggle -->
+                    <button class="btn btn-outline-secondary btn-sm" id="hissToggle" aria-label="Toggle tape hiss">
+                        <i class="fas fa-waveform"></i>
                     </button>
                     
                     {% if current_user.is_authenticated %}
@@ -108,7 +117,7 @@
             <div class="row align-items-center">
                 <div class="col-md-4">
                     <div class="d-flex align-items-center">
-                        <img id="currentSongImage" src="" alt="" class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                        <img id="currentSongImage" src="" alt="" class="rounded me-3 vinyl-art" style="width: 50px; height: 50px; object-fit: cover;">
                         <div>
                             <h6 class="mb-0" id="currentSongTitle">No song playing</h6>
                             <small class="text-muted" id="currentSongArtist">Select a song to play</small>
@@ -126,6 +135,16 @@
                         <button class="btn btn-link text-light" id="nextBtn">
                             <i class="fas fa-step-forward"></i>
                         </button>
+                    </div>
+                    <!-- Cassette-style progress -->
+                    <div id="cassette" class="cassette mt-2">
+                        <div id="leftReel" class="reel"></div>
+                        <div class="tape-container flex-grow-1">
+                            <div id="tapeBar" class="tape-bar">
+                                <div id="tapeProgress" class="tape-progress"></div>
+                            </div>
+                        </div>
+                        <div id="rightReel" class="reel"></div>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -167,10 +186,12 @@
     </footer>
     
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
     <!-- Custom JS -->
-    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/audio-player.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/theme.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/audio-player.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/vintage.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/hiss.js') }}" defer></script>
     {% block scripts %}{% endblock %}
 </body>
 </html>

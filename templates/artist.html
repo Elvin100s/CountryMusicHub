@@ -43,7 +43,10 @@
             <div class="col fade-in" style="animation-delay: {{ loop.index0 * 0.1 }}s">
                 <div class="card h-100 shadow-sm">
                     <div class="card-body">
-                        <h5 class="card-title">{{ song.name }}</h5>
+                        <div class="d-flex align-items-center gap-2">
+                            <img src="{{ url_for('static', filename='img/record.png') }}" alt="" class="vinyl-art vinyl-art-sm song-vinyl" data-song-id="{{ song.id }}">
+                            <h5 class="card-title mb-0">{{ song.name }}</h5>
+                        </div>
                         <p class="card-text text-muted small">
                             <i class="fas fa-calendar-alt me-1"></i> Added: {{ song.created_at.strftime('%Y-%m-%d') }}
                             {% if song.download_count %}
@@ -111,7 +114,7 @@
                         </span>
                         <input type="text" class="form-control form-control-lg" id="song-search" 
                                placeholder="Enter song title or keywords..." 
-                               autocomplete="off">
+                               autocomplete="off" autofocus>
                         <button class="btn btn-primary" type="button" onclick="searchSongs({{ artist.id }}, '{{ artist.name }}')">
                             Search Tubidy
                         </button>

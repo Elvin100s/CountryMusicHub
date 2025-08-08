@@ -41,11 +41,27 @@ h1, h2, h3, h4, h5, h6 {
 .navbar {
     background-color: var(--darker-bg) !important;
     border-bottom: 1px solid var(--border-color);
+    backdrop-filter: blur(6px);
 }
 
 .navbar-brand {
     font-weight: 700;
     letter-spacing: -0.5px;
+}
+
+.navbar .nav-link.active {
+    color: var(--primary-color) !important;
+}
+
+/* Hero section */
+.hero-section {
+    background: radial-gradient(1200px 600px at 50% 10%, rgba(78,205,196,0.2), transparent),
+                linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0));
+    border: 1px solid var(--border-color);
+}
+
+.hero-title {
+    letter-spacing: -1px;
 }
 
 /* Cards */
@@ -202,8 +218,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-primary:hover {
-    background-color: darken(var(--primary-color), 10%);
-    border-color: darken(var(--primary-color), 10%);
+    filter: brightness(0.95);
+    box-shadow: 0 6px 16px rgba(78, 205, 196, 0.3);
 }
 
 /* Animations */
@@ -297,3 +313,99 @@ h1, h2, h3, h4, h5, h6 {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--muted-text);
 }
+
+/* Vintage mode theme */
+.vintage-mode {
+    --primary-color: #e2b36b;
+    --secondary-color: #a65f4b;
+    --dark-bg: #231f20;
+    --darker-bg: #1b1718;
+    --card-bg: #2a2526;
+    --border-color: #3a3334;
+    --hover-bg: #332d2e;
+}
+
+.vintage-mode body,
+body.vintage-mode {
+    background-image: radial-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                      linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1));
+    background-size: 4px 4px, 100% 100%;
+}
+
+/* Vinyl rotation */
+.vinyl-art {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: inset 0 0 0 2px rgba(0,0,0,0.4), inset 0 0 0 6px rgba(255,255,255,0.05);
+}
+
+.vinyl-art-sm {
+    width: 36px;
+    height: 36px;
+}
+
+.vinyl-art::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    background: #111;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.05);
+}
+
+.spin {
+    animation: spin 3s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Cassette progress UI */
+.cassette {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.reel {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid var(--border-color);
+    position: relative;
+}
+.reel::before, .reel::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 2px; height: 8px;
+    background: var(--muted-text);
+    transform-origin: bottom center;
+}
+.reel::before { transform: translate(-50%, -50%) rotate(0deg); }
+.reel::after { transform: translate(-50%, -50%) rotate(90deg); }
+
+.tape-container { display: flex; align-items: center; }
+.tape-bar {
+    position: relative;
+    height: 6px;
+    background: var(--border-color);
+    border-radius: 3px;
+    overflow: hidden;
+}
+.tape-progress {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+}
+
+/* Spin reels when playing by reusing .spin animation on wrapper */
+.cassette.spin .reel { animation: spin 1s linear infinite; }

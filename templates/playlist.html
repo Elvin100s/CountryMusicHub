@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('playlists') }}">Playlists</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ playlist.name }}</li>
+    </ol>
+</nav>
+
+<div class="d-flex justify-content-between align-items-start mb-4">
+    <div>
+        <h1 class="display-5 mb-2">{{ playlist.name }}</h1>
+        {% if playlist.description %}
+        <p class="text-muted">{{ playlist.description }}</p>
+        {% endif %}
+        <span class="badge bg-{{ 'success' if playlist.is_public else 'secondary' }}">
+            {{ 'Public' if playlist.is_public else 'Private' }}
+        </span>
+    </div>
+    <a href="{{ url_for('edit_playlist', playlist_id=playlist.id) }}" class="btn btn-outline-light">
+        <i class="fas fa-edit me-2"></i>Edit
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Songs ({{ playlist.songs|length }})</h5>
+    </div>
+    <div class="card-body">
+        {% if playlist.songs %}
+        <div class="list-group">
+            {% for song in playlist.songs %}
+            <div class="list-group-item d-flex align-items-center justify-content-between bg-transparent border-secondary">
+                <div class="me-3">
+                    <div class="fw-semibold">{{ song.name }}</div>
+                    <small class="text-muted">by {{ song.artist.name }}</small>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="playSong({{ song.id }}, this)"><i class="fas fa-play me-1"></i>Play</button>
+                    <a class="btn btn-success" href="{{ url_for('download_song_file', song_id=song.id) }}">
+                        <i class="fas fa-download me-1"></i>Download
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-music fa-3x mb-3 text-muted"></i>
+            <p class="text-muted">No songs in this playlist yet.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
