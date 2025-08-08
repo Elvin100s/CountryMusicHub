@@ -15,6 +15,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Function to play a song
     window.playSong = function(songId, button) {
+        // Stop all small vinyl spins
+        document.querySelectorAll('.song-vinyl.spin').forEach(el => el.classList.remove('spin'));
+        // Start the clicked song's small vinyl spinning
+        const smallVinyl = document.querySelector(`.song-vinyl[data-song-id='${songId}']`);
+        if (smallVinyl) smallVinyl.classList.add('spin');
         const url = `/play/${songId}`;
         
         // If we already have a player, stop it
@@ -23,8 +28,10 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Reset previous button icon if it exists
             if (currentPlayingButton) {
-                currentPlayingButton.innerHTML = '<i class="fa fa-play"></i>';
+                currentPlayingButton.innerHTML = '<i class=\"fa fa-play\"></i>';
             }
+            // Stop any spinning small vinyl from previous song
+            document.querySelectorAll('.song-vinyl.spin').forEach(el => el.classList.remove('spin'));
         }
         
         // If we're clicking the same button that's currently playing, just stop it
@@ -43,7 +50,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // When audio ends, reset the button
         globalAudioPlayer.addEventListener('ended', function() {
-            button.innerHTML = '<i class="fa fa-play"></i>';
+            button.innerHTML = '<i class=\"fa fa-play\"></i>';
+            // Stop small vinyl when the song ends
+            const endedVinyl = document.querySelector(`.song-vinyl.spin`);
+            if (endedVinyl) endedVinyl.classList.remove('spin');
             globalAudioPlayer = null;
             currentPlayingButton = null;
         });
