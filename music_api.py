@@ -6,7 +6,6 @@ import random
 import time
 from urllib.parse import urlparse, urljoin, quote
 from werkzeug.utils import secure_filename
-from app import app
 
 logger = logging.getLogger(__name__)
 

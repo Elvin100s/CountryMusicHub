@@ -6,8 +6,7 @@ import os
 
 # Set max upload size from environment or default to 300MB
 MAX_CONTENT_LENGTH = int(os.getenv('BODY_SIZE_LIMIT', 314572800))  # 300MB in bytes
-from app import db, app
-from models import Artist, Song, Playlist
+from app import db
 from music_api import search_songs, download_song
 
 def get_artist_image(artist_name):
@@ -47,11 +46,13 @@ def register_routes(app):
 
     @app.route('/')
     def home():
+        from models import Artist
         artists = Artist.query.order_by(Artist.name).all()
         return render_template('home.html', artists=artists)
 
     @app.route('/artist/<int:artist_id>')
     def artist_page(artist_id):
+        from models import Artist, Song, Playlist
         artist = Artist.query.get_or_404(artist_id)
         songs = Song.query.filter_by(artist_id=artist_id).order_by(Song.name).all()
         playlists = Playlist.query.filter_by(is_public=True).all()

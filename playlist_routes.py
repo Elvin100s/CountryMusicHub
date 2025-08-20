@@ -12,7 +12,6 @@ import os
 import logging
 from flask import render_template, request, redirect, url_for, jsonify, flash, session
 from app import db
-from models import Playlist, Song, Artist
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -24,12 +23,14 @@ def register_playlist_routes(app):
     @app.route('/playlists')
     def playlists():
         """Display all public playlists"""
+        from models import Playlist
         playlists = Playlist.query.filter_by(is_public=True).all()
         return render_template('playlists.html', playlists=playlists)
     
     @app.route('/playlist/<int:playlist_id>')
     def view_playlist(playlist_id):
         """View a specific playlist and its songs"""
+        from models import Playlist
         playlist = Playlist.query.get_or_404(playlist_id)
         return render_template('playlist.html', playlist=playlist)
     
@@ -46,6 +47,7 @@ def register_playlist_routes(app):
                 return redirect(url_for('create_playlist'))
             
             # Create new playlist
+            from models import Playlist
             playlist = Playlist(name=name, description=description, is_public=is_public)
             db.session.add(playlist)
             db.session.commit()
@@ -58,6 +60,7 @@ def register_playlist_routes(app):
     @app.route('/api/playlist/<int:playlist_id>/add/<int:song_id>', methods=['POST'])
     def add_to_playlist(playlist_id, song_id):
         """Add a song to a playlist"""
+        from models import Playlist, Song
         playlist = Playlist.query.get_or_404(playlist_id)
         song = Song.query.get_or_404(song_id)
         
@@ -75,6 +78,7 @@ def register_playlist_routes(app):
     @app.route('/api/playlist/<int:playlist_id>/remove/<int:song_id>', methods=['POST'])
     def remove_from_playlist(playlist_id, song_id):
         """Remove a song from a playlist"""
+        from models import Playlist, Song
         playlist = Playlist.query.get_or_404(playlist_id)
         song = Song.query.get_or_404(song_id)
         

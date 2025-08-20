@@ -4,13 +4,12 @@ from functools import wraps
 from werkzeug.utils import secure_filename
 from flask import render_template, request, redirect, url_for, flash, session, abort
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
-from app import app, db
-from models import Admin, Artist, Song, create_default_admin, create_default_artists, init_db
+from app import db
 
 logger = logging.getLogger(__name__)
 
 login_manager = LoginManager()
-login_manager.init_app(app)
+# app will be initialized in register_admin_routes
 login_manager.login_view = 'admin_login'
 
 @login_manager.user_loader
@@ -26,8 +25,7 @@ def admin_required(f):
     return decorated_function
 
 def register_admin_routes(app):
-    with app.app_context():
-        init_db()
+    login_manager.init_app(app)
 
     @app.route('/admin/login', methods=['GET', 'POST'])
     def admin_login():
@@ -35,6 +33,7 @@ def register_admin_routes(app):
             username = request.form.get('username')
             password = request.form.get('password')
 
+            from models import Admin
             admin = Admin.query.filter_by(username=username).first()
 
             if admin and admin.check_password(password):
@@ -56,6 +55,7 @@ def register_admin_routes(app):
     @app.route('/admin')
     @admin_required
     def admin_dashboard():
+        from models import Artist, Song
         artists = Artist.query.order_by(Artist.name).all()
         songs_count = Song.query.count()
         return render_template('admin/dashboard.html', artists=artists, songs_count=songs_count)
@@ -70,6 +70,7 @@ def register_admin_routes(app):
             flash('Artist name is required', 'danger')
             return redirect(url_for('admin_dashboard'))
 
+        from models import Artist
         existing_artist = Artist.query.filter_by(name=name).first()
         if existing_artist:
             flash('Artist already exists', 'danger')
@@ -95,6 +96,7 @@ def register_admin_routes(app):
             return redirect(url_for('admin_dashboard'))
 
         # Check if the updated name conflicts with another artist
+        from models import Artist
         existing_artist = Artist.query.filter_by(name=name).first()
         if existing_artist and existing_artist.id != artist_id:
             flash('Another artist with this name already exists', 'danger')
@@ -110,6 +112,7 @@ def register_admin_routes(app):
     @app.route('/admin/artist/<int:artist_id>/delete', methods=['POST'])
     @admin_required
     def delete_artist(artist_id):
+        from models import Artist, Song
         artist = Artist.query.get_or_404(artist_id)
 
         # Delete all songs for this artist
@@ -197,12 +200,14 @@ def register_admin_routes(app):
                 if request.referrer and 'artist' in request.referrer:
                     return redirect(url_for('artist_page', artist_id=artist_id))
 
+        from models import Artist
         artists = Artist.query.order_by(Artist.name).all()
         return render_template('admin/upload.html', artists=artists)
 
     @app.route('/admin/song/<int:song_id>/delete', methods=['POST'])
     @admin_required
     def delete_song(song_id):
+        from models import Song
         song = Song.query.get_or_404(song_id)
 
         # Delete the file

@@ -1,17 +1,16 @@
 import os
 import logging
+from extensions import db
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from werkzeug.middleware.proxy_fix import ProxyFix
 from config import config
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
 
-db = SQLAlchemy()
-
 def create_app(config_name='default'):
     app = Flask(__name__)
+    db.init_app(app)
     
     # Load the appropriate configuration
     app.config.from_object(config[config_name])
